@@ -1,0 +1,710 @@
+body {
+    font-family: inherit;
+    background: inherit;
+    color: inherit;
+}
+
+.funds-wrapper{
+    opacity:0;
+    transform:translateY(20px);
+    animation:fade 0.5s forwards;
+    display:grid;
+    grid-template-columns: minmax(180px, 240px) minmax(0, 3.9fr);
+    gap:24px;
+    padding-top:114px;
+    max-width:1460px;
+    width:min(100% - 42px, 1460px);
+    min-height:calc(100vh - 74px - 78px);
+    margin:0 auto;
+}
+
+.funds-wrapper,
+.funds-wrapper *{
+    box-sizing:border-box;
+}
+
+.funds-header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:20px;
+    margin-bottom:24px;
+}
+
+.page-heading h1{
+    margin:0;
+    font-size:clamp(2rem, 4vw, 2.75rem);
+    line-height:1.1;
+    color:#f4fffd;
+}
+
+.page-heading p{
+    margin-top:8px;
+    color:#a7c9c7;
+    font-size:1rem;
+}
+
+.summary-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:8px;
+    margin:0 0 22px;
+}
+
+.funds-header {
+    padding-top: 8px;
+}
+
+.funds-feed .section-panel {
+    padding: 22px 22px 18px;
+}
+
+.funds-feed .admin-actions,
+.funds-feed .summary-grid {
+    margin-bottom:0;
+}
+
+.funds-feed .fund-post {
+    margin-bottom: 16px;
+}
+
+.funds-feed .fund-post:last-child {
+    margin-bottom: 0;
+}
+
+.summary-card{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+    min-width:0;
+    width:100%;
+    min-height:0;
+    padding:10px 16px;
+    border-radius:16px;
+    background:rgba(10, 26, 33, 0.7);
+    border:1px solid rgba(142, 236, 224, .14);
+    box-shadow:0 18px 38px rgba(0,0,0,.12);
+}
+
+.summary-card .label{
+    display:block;
+    flex:1 1 110px;
+    min-width:0;
+    overflow-wrap:anywhere;
+    color:#8adad3;
+    font-size:.75rem;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    font-weight:700;
+    margin-bottom:0;
+}
+
+.summary-card .value{
+    display:block;
+    flex:0 1 auto;
+    min-width:0;
+    max-width:100%;
+    margin-left:auto;
+    overflow-wrap:anywhere;
+    word-break:break-word;
+    font-size:clamp(1rem, 2vw, 1.3rem);
+    line-height:1.2;
+    font-weight:800;
+    color:#fff;
+}
+
+.summary-card .value.positive{color:#00ffd5}
+.summary-card .value.negative{color:#ff7a7a}
+
+.funds-feed{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    max-height:none;
+    overflow:visible;
+    padding-right:10px;
+    min-width:0;
+}
+
+.section-panel{
+    padding:18px 20px 20px;
+    border-radius:18px;
+    background:rgba(10, 26, 33, 0.7);
+    border:1px solid rgba(142, 236, 224, .12);
+    box-shadow:0 18px 38px rgba(0,0,0,.12);
+}
+
+.section-title-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:18px;
+}
+
+.section-title-row h2{
+    margin:0;
+    min-width:0;
+    overflow-wrap:anywhere;
+    word-break:break-word;
+    color:#f4fffd;
+    font-size:1.35rem;
+}
+
+.status-pill{
+    display:inline-flex;
+    align-items:center;
+    padding:6px 10px;
+    border-radius:999px;
+    font-size:.72rem;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    background:rgba(0,255,213,.12);
+    color:#00ffd5;
+}
+
+.fund-post{
+    background:rgba(29,44,52,0.72);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,0.06);
+    border-radius:18px;
+    padding:22px 20px;
+    box-shadow:0 14px 30px rgba(0,0,0,.12);
+    color:#fff;
+    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+.fund-post:hover{
+    transform:translateY(-2px);
+    border-color:rgba(0,255,213,.25);
+    box-shadow:0 18px 40px rgba(0,0,0,.16);
+}
+
+.fund-post-header{
+    display:flex;
+    align-items:flex-start;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom:12px;
+}
+
+.fund-post h3{
+    margin:0;
+    min-width:0;
+    overflow-wrap:anywhere;
+    word-break:break-word;
+    font-size:1.3rem;
+    color:#f4fffd;
+}
+
+.fund-post .meta-line{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:10px;
+}
+
+.fund,
+.expense{
+    display:inline-block;
+    font-weight:800;
+    font-size:1.05rem;
+}
+
+.fund{color:#00ffd5}
+.expense{color:#ff7a7a}
+
+.quarter{
+    display:inline-flex;
+    align-items:center;
+    padding:5px 8px;
+    border-radius:999px;
+    background:rgba(255,213,0,.12);
+    color:#ffd966;
+    font-size:.78rem;
+    font-weight:700;
+    letter-spacing:.04em;
+}
+
+.fund-post p{
+    margin:10px 0 0;
+    color:#dbeaea;
+    line-height:1.6;
+}
+
+.fund-post img{
+    display:block;
+    width:100%;
+    max-height:180px;
+    object-fit:cover;
+    margin-top:14px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,.06);
+}
+
+.fund-post small{
+    display:block;
+    margin-top:12px;
+    color:#a9c0bf;
+    font-size:.82rem;
+}
+
+.funds-sidebar{
+    position:sticky;
+    top:120px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    max-height:calc(100vh - 130px);
+    width:100%;
+    max-width:240px;
+    overflow-y:auto;
+    padding-right:4px;
+    margin-left:0;
+    min-width:0;
+}
+
+.funds-sidebar .budget-card,
+.funds-sidebar .section-panel {
+    width:100%;
+    max-width:100%;
+}
+
+.funds-sidebar .section-panel {
+    min-width: 0;
+}
+
+.funds-sidebar .section-panel {
+    padding:16px;
+}
+
+.funds-sidebar .section-title-row {
+    align-items:stretch;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom:14px;
+}
+
+.funds-sidebar .section-title-row h2,
+.funds-sidebar .status-pill {
+    max-width:100%;
+    overflow-wrap:anywhere;
+    word-break:break-word;
+}
+
+.funds-sidebar .status-pill {
+    align-self:flex-start;
+}
+
+.funds-sidebar .budget-card,
+.funds-sidebar .section-panel,
+.funds-sidebar .fund-post,
+.funds-sidebar .fund-post-header,
+.funds-sidebar .fund-post h3,
+.funds-sidebar .fund-post p,
+.funds-sidebar .post-actions,
+.funds-sidebar .sidebar-btn {
+    max-width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.funds-sidebar .fund-post img,
+.funds-sidebar input,
+.funds-sidebar select,
+.funds-sidebar button,
+.funds-sidebar .post-actions a {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.funds-sidebar,
+.funds-sidebar * {
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+.funds-sidebar .fund-post,
+.funds-sidebar .fund-post-header,
+.funds-sidebar .fund-post h3,
+.funds-sidebar .fund-post p,
+.funds-sidebar .section-title-row,
+.funds-sidebar .empty-state,
+.funds-sidebar .budget-card {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.funds-sidebar .fund-post-header {
+    align-items: flex-start;
+}
+
+.funds-sidebar .fund-post-header h3 {
+    flex: 1 1 auto;
+}
+
+.funds-sidebar .fund-post-header .fund,
+.funds-sidebar .fund-post-header .expense {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    text-align: right;
+}
+
+.funds-sidebar .fund-post img,
+.funds-sidebar .sidebar-budget-image,
+.funds-sidebar .post-actions,
+.funds-sidebar .post-actions a,
+.funds-sidebar .post-actions button,
+.funds-sidebar .sidebar-btn,
+.funds-sidebar input,
+.funds-sidebar select,
+.funds-sidebar textarea {
+    max-width: 100%;
+}
+
+.funds-sidebar .fund-post img,
+.funds-sidebar .sidebar-budget-image {
+    height: auto;
+}
+
+.funds-sidebar .post-actions a,
+.funds-sidebar .post-actions button,
+.funds-sidebar .sidebar-btn {
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+
+.budget-card{
+    background:linear-gradient(145deg, rgba(15, 39, 58, 0.9), rgba(13, 24, 31, 0.9));
+    border-radius:18px;
+    border:1px solid rgba(142, 236, 224, .12);
+    padding:22px 18px;
+    box-shadow:0 18px 40px rgba(0,0,0,.14);
+    color:#fff;
+    text-align:center;
+    width:100%;
+}
+
+.budget-card h2{
+    margin:0 0 10px;
+    font-size:.78rem;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:#8adad3;
+}
+
+.budget-card span{
+    display:block;
+    max-width: 100%;
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    line-height: 1.2;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    overflow-wrap:anywhere;
+    word-break:break-word;
+    font-size:clamp(1rem, 2vw, 1.3rem);
+    color:#00ffd5;
+    font-weight:800;
+}
+
+.funds-sidebar .budget-card span{
+    display:block;
+    width:100%;
+    max-width:100%;
+    margin-top:0;
+    color:#00ffd5;
+    font-size:clamp(1rem, 2vw, 1.3rem);
+    font-weight:800;
+    line-height:1.2;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    overflow-wrap:anywhere;
+    word-break:break-word;
+}
+
+.budget-card .current-budget-value {
+    display: block !important;
+    width: 100%;
+    min-height: 2.2rem;
+    margin-top: 8px;
+    color: #00ffd5 !important;
+    font-size: clamp(1.35rem, 2.8vw, 1.9rem);
+    font-weight: 900;
+    line-height: 1.25;
+    text-align: center;
+    white-space: normal;
+    overflow: visible;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+/* Keep the admin budget card as prominent as the public funds card. */
+.funds-sidebar > .budget-card {
+    min-height: 0;
+    padding: 22px 18px;
+    border-radius: 14px;
+    flex: 0 0 auto;
+    background: linear-gradient(160deg, rgba(17, 44, 54, 0.96), rgba(8, 24, 31, 0.95));
+    border: 1px solid rgba(0, 255, 213, 0.18);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
+}
+
+.funds-sidebar > .budget-card h2 {
+    font-size: .72rem;
+    letter-spacing: .14em;
+    margin-bottom: 10px;
+}
+
+.year-filter{
+    display:grid;
+    gap:7px;
+    padding:12px;
+    border:1px solid rgba(142,236,224,.12);
+    border-radius:14px;
+    background:rgba(10,26,33,.58);
+}
+
+.year-filter label{
+    color:#8adad3;
+    font-size:.7rem;
+    font-weight:800;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+}
+
+.year-filter select{
+    width:100%;
+    border:1px solid rgba(142,236,224,.16);
+    border-radius:8px;
+    padding:9px 10px;
+    background:#071017;
+    color:#f4fffd;
+    font:inherit;
+    font-size:.86rem;
+    outline:none;
+}
+
+.year-filter select:focus{
+    border-color:#00ffd5;
+    box-shadow:0 0 0 3px rgba(0,255,213,.12);
+}
+
+.sidebar-actions{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.sidebar-btn,
+.popup-content button,
+.post-actions a,
+.post-actions button{
+    border:none;
+    border-radius:10px;
+    padding:11px 14px;
+    cursor:pointer;
+    font-weight:700;
+    text-decoration:none;
+    transition:transform .15s ease, filter .15s ease;
+}
+
+.sidebar-btn:hover,
+.popup-content button:hover,
+.post-actions a:hover,
+.post-actions button:hover{
+    transform:translateY(-1px);
+    filter:brightness(1.04);
+}
+
+.sidebar-btn{
+    background:linear-gradient(135deg, #00ffd5, #3ee0ba);
+    color:#071017;
+}
+
+.expense-btn{
+    background:linear-gradient(135deg, #ff7a7a, #ff4d4d);
+    color:#fff;
+}
+
+.popup{
+    display:none;
+    position:fixed;
+    z-index:1000;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(2,8,12,0.72);
+    backdrop-filter:blur(6px);
+    justify-content:center;
+    align-items:center;
+}
+
+.popup-content{
+    background:linear-gradient(180deg, #0d1d24, #0a1418);
+    padding:24px 20px 18px;
+    border-radius:18px;
+    width:min(92vw, 440px);
+    position:relative;
+    border:1px solid rgba(142,236,224,.18);
+    box-shadow:0 28px 80px rgba(0,0,0,.3);
+}
+
+.popup-content h3{
+    margin:0 0 18px;
+    color:#f4fffd;
+    font-size:1.5rem;
+}
+
+.close-btn{
+    position:absolute;
+    top:10px;
+    right:15px;
+    font-size:1.8rem;
+    cursor:pointer;
+    color:#c7d7d5;
+}
+
+.popup-content form{display:grid; gap:12px}
+
+.popup-content input,
+.popup-content textarea,
+.popup-content select{
+    width:100%;
+    border:1px solid rgba(142,236,224,.14);
+    border-radius:10px;
+    padding:12px 14px;
+    font-size:1rem;
+    background:#071017;
+    color:#fff;
+    outline:none;
+}
+
+.popup-content input:focus,
+.popup-content textarea:focus,
+.popup-content select:focus{
+    border-color:#00ffd5;
+    box-shadow:0 0 0 3px rgba(0,255,213,.12);
+}
+
+.popup-content textarea{min-height:110px; resize:vertical}
+
+.popup-content button{
+    width:100%;
+    background:linear-gradient(135deg,#00ffd5,#34e0c0);
+    color:#071017;
+    margin-top:4px;
+}
+
+.empty-state{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:130px;
+    border:1px dashed rgba(142,236,224,.22);
+    border-radius:14px;
+    background:rgba(255,255,255,.02);
+    color:#abcbc9;
+    text-align:center;
+    padding:18px;
+}
+
+.post-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:14px;
+}
+
+.post-actions a,
+.post-actions button{
+    background:#00ffd5;
+    color:#071017;
+    padding:7px 12px;
+    font-size:.88rem;
+}
+
+.post-actions .delete-btn{
+    background:#ff6f6f;
+    color:#fff;
+}
+
+@media screen and (max-width: 900px){
+    .funds-wrapper{
+        grid-template-columns:1fr;
+        width:min(100% - 28px, 1240px);
+        padding:98px 0 48px;
+    }
+    .funds-sidebar{
+        position:relative;
+        top:0;
+        max-height:none;
+        overflow:visible;
+    }
+    .funds-feed{
+        max-height:none;
+        overflow:visible;
+    }
+    .summary-grid{
+        grid-template-columns:1fr;
+    }
+    .funds-header{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+}
+
+@media screen and (max-width: 560px){
+    .fund-post{
+        padding:18px 16px;
+    }
+    .fund-post-header{
+        flex-direction:column;
+    }
+    .section-title-row{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+}
+
+.post-actions button:hover{ background:#00bfa5; }
+.post-actions .delete-btn:hover{ background:#e04b4b; }
+
+.post-actions{
+    margin-top:10px;
+}
+
+.post-actions a{
+    display:inline-block;
+    padding:6px 12px;
+    border-radius:6px;
+    margin-right:5px;
+    text-decoration:none;
+    font-weight:bold;
+    font-size:0.9rem;
+    color:#071017;
+    background:#00ffd5;
+}
+
+.post-actions .delete-btn{
+    background:#ff5c5c;
+    color:#fff;
+}
+
+.post-actions a:hover{ background:#00bf13; }
+.post-actions .delete-btn:hover{ background:#e04b4b; }
