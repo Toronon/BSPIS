@@ -1,2 +1,2 @@
-window.BSPIS_SUPABASE_URL = 'https://YOUR_PROJECT_REF.supabase.co';
-window.BSPIS_SUPABASE_ANON_KEY = 'YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY';
+window.BSPIS_SUPABASE_URL = 'https://uuvwkmsflawjwwnzfyjw.supabase.co';
+window.BSPIS_SUPABASE_ANON_KEY = 'sb_publishable_OikrmMyHSIqCuwcTvXLQ1w_SNkMST4J';
