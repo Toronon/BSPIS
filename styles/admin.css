@@ -47,8 +47,7 @@
 .official-card { display: grid; grid-template-columns: 76px minmax(0,1fr); align-items: center; gap: 15px; min-width: 0; padding: 16px; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; background: rgba(255,255,255,.045); box-shadow: 0 12px 30px rgba(0,0,0,.1); }
 .official-card--occupied { border-style: solid; border-color: rgba(0,227,194,.22); background: rgba(10,28,35,.76); }
 .official-card--empty { min-height: 132px; grid-template-columns: 54px minmax(0,1fr); border: 1px dashed rgba(142,236,224,.38); background: rgba(255,255,255,.025); box-shadow: none; }
-.official-empty-avatar { display: grid; width: 48px; height: 48px; place-items: center; border: 1px solid rgba(142,236,224,.22); border-radius: 50%; background: rgba(0,227,194,.07); }
-.official-empty-avatar svg { width: 28px; height: 28px; fill: none; stroke: #8de9dc; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2; }
+.official-card img.official-empty-avatar { width: 54px; height: 54px; object-fit: cover; border: 1px solid rgba(142,236,224,.22); border-radius: 50%; background: #f4fffd; }
 .official-card--empty .official-card-copy span { color: #8de9dc; }
 .official-card--empty .official-card-copy h3 { margin-top: 5px; color: #9db8b8; font-size: .9rem; font-weight: 500; }
 .official-add-button { grid-column: 1/-1; justify-self: start; padding: 8px 12px; border: 1px solid rgba(0,227,194,.3); border-radius: 8px; background: rgba(0,227,194,.1); color: #8de9dc; font: inherit; font-size: .78rem; font-weight: 800; cursor: pointer; }
