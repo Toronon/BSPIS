@@ -130,6 +130,7 @@ body.login-body {
     text-decoration: none;
 }
 .back-home:hover {color: #fff}
+.back-home-button {padding: 0;border: 0;background: none;font: inherit;cursor: pointer}
 .login-heading {margin-bottom: 30px}
 .login-heading h2 {margin-bottom: 10px;color: #f4fffd;font-size: 2.25rem;line-height: 1.1}
 .login-heading > p:last-child {color: #91acab;line-height: 1.5}
@@ -142,7 +143,17 @@ body.login-body {
     color: #ffb2b2;
     font-size: .88rem;
 }
+.login-success {
+    margin-bottom: 20px;
+    padding: 11px 13px;
+    border: 1px solid rgba(0, 255, 213, .3);
+    border-radius: 8px;
+    background: rgba(0, 255, 213, .08);
+    color: #8de9dc;
+    font-size: .88rem;
+}
 .login-container form {display: grid;gap: 20px}
+.login-container form[hidden] {display: none}
 .login-field {display: grid;gap: 8px}
 .login-field label {color: #dcecea;font-size: .84rem;font-weight: 700}
 .login-field input {
@@ -156,6 +167,17 @@ body.login-body {
     color: #f4fffd;
     font: inherit;
 }
+.login-field select {
+    width: 100%;
+    height: 48px;
+    padding: 0 14px;
+    border: 1px solid #29484e;
+    border-radius: 7px;
+    background: #07171d;
+    color: #f4fffd;
+    font: inherit;
+}
+.login-field select:focus {border-color: #00ffd5;box-shadow: 0 0 0 3px rgba(0, 255, 213, .12);outline: none}
 .login-field input::placeholder {color: #668180}
 .login-field input:focus {border-color: #00ffd5;box-shadow: 0 0 0 3px rgba(0, 255, 213, .12)}
 .login-container button[type="submit"] {
