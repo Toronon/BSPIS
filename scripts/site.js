@@ -147,6 +147,7 @@ async function loadAnnouncements() {
 async function loadFunds() {
     const yearSelect = document.getElementById('fund-year');
     if (!yearSelect) return;
+    const categorySelect = document.getElementById('fund-category');
     const fundList = document.getElementById('fund-list');
     const annualList = document.getElementById('annual-budgets');
     try {
@@ -157,18 +158,24 @@ async function loadFunds() {
         if (budgetError) throw budgetError;
         if (fundError) throw fundError;
 
-        const years = [...new Set(budgets.map(item => Number(item.year)))];
+        const years = [...new Set([...budgets, ...funds].map(item => Number(item.year)))];
         yearSelect.innerHTML = '<option value="">Select Year</option>' + years.map(year =>
             `<option value="${year}">${year}</option>`).join('');
         if (years.length) yearSelect.value = String(years[0]);
 
         const render = () => {
             const year = yearSelect.value ? Number(yearSelect.value) : null;
-            const shownBudgets = year === null ? budgets : budgets.filter(item => Number(item.year) === year);
-            const shownFunds = year === null ? funds : funds.filter(item => Number(item.year) === year);
+            const category = categorySelect?.value || 'Barangay';
+            const shownBudgets = budgets.filter(item => (item.category || 'Barangay') === category
+                && (year === null || Number(item.year) === year));
+            const shownFunds = funds.filter(item => (item.category || 'Barangay') === category
+                && (year === null || Number(item.year) === year));
             const annualTotal = shownBudgets.reduce((sum, item) => sum + Number(item.amount || 0), 0);
             const expenseTotal = shownFunds.reduce((sum, item) => sum + Math.abs(Number(item.amount || 0)), 0);
             const current = annualTotal - expenseTotal;
+            const selectedCategoryLabel = category === 'SK' ? 'SK' : 'Barangay';
+            document.querySelector('.budget-card h2').textContent = `${selectedCategoryLabel} Current Budget`;
+            document.getElementById('budget-summary').previousElementSibling.textContent = `${selectedCategoryLabel} Current Budget`;
             document.getElementById('current-budget').textContent = `₱${current.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
             document.getElementById('budget-summary').textContent = `₱${current.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
             document.getElementById('annual-count').textContent = shownBudgets.length;
@@ -176,18 +183,21 @@ async function loadFunds() {
             annualList.innerHTML = shownBudgets.map(item => `
                 <article class="fund-post"><div class="fund-post-header"><h3>Annual Budget ${escapeHtml(item.year)}</h3>
                 <span class="fund">₱${Number(item.amount).toLocaleString('en-PH', { minimumFractionDigits: 2 })}</span></div>
+                <span class="fund-category-badge">${escapeHtml(item.category || 'Barangay')} Funds</span>
                 <p>${escapeHtml(item.description)}</p>
                 ${item.image ? `<img class="sidebar-budget-image" src="${escapeHtml(imageUrl(item.image, 'funds'))}" alt="Annual budget">` : ''}</article>
             `).join('') || '<div class="empty-state">No annual budgets posted yet.</div>';
             fundList.innerHTML = shownFunds.map(item => `
                 <article class="fund-post"><div class="fund-post-header"><h3>${escapeHtml(item.fund_name)}</h3>
                 <span class="${Number(item.amount) < 0 ? 'expense' : 'fund'}">₱${Number(item.amount).toLocaleString('en-PH', { minimumFractionDigits: 2 })}</span></div>
+                <span class="fund-category-badge">${escapeHtml(item.category || 'Barangay')} Funds</span>
                 <div class="meta-line"><span class="quarter">${escapeHtml(item.quarter || '')}</span><small>${escapeHtml(item.date_received || '')}</small></div>
                 <p>${escapeHtml(item.description)}</p>
                 ${item.image ? `<img src="${escapeHtml(imageUrl(item.image, 'funds'))}" alt="">` : ''}</article>
             `).join('') || '<div class="empty-state">No expenses posted yet.</div>';
         };
         yearSelect.addEventListener('change', render);
+        categorySelect?.addEventListener('change', render);
         render();
     } catch (error) {
         showError(fundList, error);
@@ -367,6 +377,7 @@ function renderFundAdmin() {
     const budgets = adminData.annual_budgets || [];
     const funds = adminData.funds || [];
     const yearSelect = document.getElementById('admin-fund-year');
+    const categorySelect = document.getElementById('admin-fund-category');
     const availableYears = [...new Set([...budgets, ...funds].map(row => String(row.year)).filter(Boolean))]
         .sort((a, b) => Number(b) - Number(a));
     if (yearSelect) {
@@ -376,14 +387,22 @@ function renderFundAdmin() {
         yearSelect.value = availableYears.includes(previousYear) ? previousYear : (availableYears[0] || '');
     }
     const year = yearSelect?.value;
-    const shownBudgets = year ? budgets.filter(row => String(row.year) === year) : budgets;
-    const shownFunds = year ? funds.filter(row => String(row.year) === year) : funds;
+    const category = categorySelect?.value || 'Barangay';
+    const shownBudgets = budgets.filter(row => (row.category || 'Barangay') === category
+        && (!year || String(row.year) === year));
+    const shownFunds = funds.filter(row => (row.category || 'Barangay') === category
+        && (!year || String(row.year) === year));
     const annualTotal = shownBudgets.reduce((sum, row) => sum + Number(row.amount || 0), 0);
     const expenseTotal = shownFunds.reduce((sum, row) => sum + Math.abs(Number(row.amount || 0)), 0);
     const currentBudget = annualTotal - expenseTotal;
     const formattedBudget = `₱${currentBudget.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
     const currentBudgetTarget = document.getElementById('admin-current-budget');
     const summaryTarget = document.getElementById('admin-budget-summary');
+    const categoryLabel = category === 'SK' ? 'SK' : 'Barangay';
+    const budgetHeading = document.querySelector('.funds-sidebar .budget-card h2');
+    const summaryHeading = summaryTarget?.previousElementSibling;
+    if (budgetHeading) budgetHeading.textContent = `${categoryLabel} Current Budget`;
+    if (summaryHeading) summaryHeading.textContent = `${categoryLabel} Current Budget`;
     if (currentBudgetTarget) currentBudgetTarget.textContent = formattedBudget;
     if (summaryTarget) summaryTarget.textContent = formattedBudget;
     const annualCount = document.getElementById('admin-annual-count');
@@ -395,6 +414,7 @@ function renderFundAdmin() {
             <article class="fund-post">
                 <div class="fund-post-header"><h3>Annual Budget ${escapeHtml(record.year)}</h3>
                     <span class="fund">₱${Number(record.amount || 0).toLocaleString('en-PH', { minimumFractionDigits: 2 })}</span></div>
+                <span class="fund-category-badge">${escapeHtml(record.category || 'Barangay')} Funds</span>
                 <p>${escapeHtml(record.description || '')}</p>
                 ${record.image ? `<img src="${escapeHtml(imageUrl(record.image, 'funds'))}" alt="Annual budget image">` : ''}
                 <div class="post-actions">
@@ -408,6 +428,7 @@ function renderFundAdmin() {
             <article class="fund-post">
                 <div class="fund-post-header"><h3>${escapeHtml(record.fund_name)}</h3>
                     <span class="expense">₱${Math.abs(Number(record.amount || 0)).toLocaleString('en-PH', { minimumFractionDigits: 2 })}</span></div>
+                <span class="fund-category-badge">${escapeHtml(record.category || 'Barangay')} Funds</span>
                 <div class="meta-line"><span class="quarter">${escapeHtml(record.quarter || '')}</span><small>${escapeHtml(record.date_received || '')}</small></div>
                 <p>${escapeHtml(record.description || '')}</p>
                 ${record.image ? `<img src="${escapeHtml(imageUrl(record.image, 'funds'))}" alt="Expense image">` : ''}
@@ -508,11 +529,12 @@ async function saveRecord(table, form) {
     if (imageUrl) values.image = imageUrl;
     if (table === 'funds') {
         const selectedYear = Number(values.year);
+        const category = values.category || 'Barangay';
         values.amount = -Math.abs(Number(values.amount));
         if (!values.date_received) values.date_received = new Date().toISOString().slice(0, 10);
         const [{ data: budgets, error: budgetError }, { data: expenses, error: expensesError }] = await Promise.all([
-            supabase.from('annual_budgets').select('amount').eq('year', selectedYear),
-            supabase.from('funds').select('id,amount').eq('year', selectedYear)
+            supabase.from('annual_budgets').select('amount').eq('year', selectedYear).eq('category', category),
+            supabase.from('funds').select('id,amount').eq('year', selectedYear).eq('category', category)
         ]);
         if (budgetError) throw budgetError;
         if (expensesError) throw expensesError;
@@ -744,21 +766,23 @@ function setupAdminPage() {
     document.getElementById('official-modal')?.addEventListener('click', event => {
         if (event.target.id === 'official-modal') event.currentTarget.hidden = true;
     });
-    document.getElementById('open-annual-btn')?.addEventListener('click', () => {
-        const form = document.getElementById('annual-form');
-        form.reset();
-        form.elements.namedItem('id').value = '';
-        document.getElementById('annual-popup').querySelector('h3').textContent = 'Add Annual Budget';
-        document.getElementById('annual-popup').setAttribute('aria-hidden', 'false');
-    });
     document.getElementById('open-expense-btn')?.addEventListener('click', () => {
         const form = document.getElementById('fund-form');
         form.reset();
         form.elements.namedItem('id').value = '';
         form.elements.namedItem('year').value = document.getElementById('admin-fund-year').value
             || String(new Date().getFullYear());
+        form.elements.namedItem('category').value = document.getElementById('admin-fund-category').value || 'Barangay';
         document.getElementById('expense-popup').querySelector('h3').textContent = 'Add Expense';
         document.getElementById('expense-popup').setAttribute('aria-hidden', 'false');
+    });
+    document.getElementById('open-annual-btn')?.addEventListener('click', () => {
+        const form = document.getElementById('annual-form');
+        form.reset();
+        form.elements.namedItem('id').value = '';
+        form.elements.namedItem('category').value = document.getElementById('admin-fund-category').value || 'Barangay';
+        document.getElementById('annual-popup').querySelector('h3').textContent = 'Add Annual Budget';
+        document.getElementById('annual-popup').setAttribute('aria-hidden', 'false');
     });
     document.querySelectorAll('[data-close-popup]').forEach(button => {
         button.addEventListener('click', () => {
@@ -772,6 +796,7 @@ function setupAdminPage() {
     });
     document.getElementById('generate-report-btn')?.addEventListener('click', () => window.print());
     document.getElementById('admin-fund-year')?.addEventListener('change', renderFundAdmin);
+    document.getElementById('admin-fund-category')?.addEventListener('change', renderFundAdmin);
     document.getElementById('resident-search')?.addEventListener('submit', event => event.preventDefault());
     document.getElementById('resident-search')?.addEventListener('input', filterResidents);
     document.getElementById('resident-search')?.addEventListener('change', filterResidents);
