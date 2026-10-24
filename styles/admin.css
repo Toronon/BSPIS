@@ -45,9 +45,14 @@
 .official-chart-grid--middle { grid-template-columns: repeat(2, minmax(0, 260px)); justify-content: center; }
 .official-tier-label { color: #6f9d98; font-size: .68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .official-card { display: grid; grid-template-columns: 76px minmax(0,1fr); align-items: center; gap: 15px; min-width: 0; padding: 16px; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; background: rgba(255,255,255,.045); box-shadow: 0 12px 30px rgba(0,0,0,.1); }
-.official-card--empty { min-height: 110px; grid-template-columns: minmax(0,1fr) auto; border-style: dashed; border-color: rgba(142,236,224,.24); background: rgba(255,255,255,.025); }
+.official-card--occupied { border-style: solid; border-color: rgba(0,227,194,.22); background: rgba(10,28,35,.76); }
+.official-card--empty { min-height: 132px; grid-template-columns: 54px minmax(0,1fr); border: 1px dashed rgba(142,236,224,.38); background: rgba(255,255,255,.025); box-shadow: none; }
+.official-empty-avatar { display: grid; width: 48px; height: 48px; place-items: center; border: 1px solid rgba(142,236,224,.22); border-radius: 50%; background: rgba(0,227,194,.07); }
+.official-empty-avatar svg { width: 28px; height: 28px; fill: none; stroke: #8de9dc; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2; }
 .official-card--empty .official-card-copy span { color: #8de9dc; }
-.official-card--empty .official-card-copy h3 { color: #9db8b8; font-size: .9rem; font-weight: 500; }
+.official-card--empty .official-card-copy h3 { margin-top: 5px; color: #9db8b8; font-size: .9rem; font-weight: 500; }
+.official-add-button { grid-column: 1/-1; justify-self: start; padding: 8px 12px; border: 1px solid rgba(0,227,194,.3); border-radius: 8px; background: rgba(0,227,194,.1); color: #8de9dc; font: inherit; font-size: .78rem; font-weight: 800; cursor: pointer; }
+.official-add-button:hover { background: rgba(0,227,194,.18); }
 .official-card img { width: 76px; height: 76px; object-fit: cover; border-radius: 13px; border: 1px solid rgba(0,227,194,.22); }
 .official-card-copy { min-width: 0; }
 .official-card-copy span { display: block; margin-bottom: 5px; color: #00e3c2; font-size: .68rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
@@ -67,12 +72,15 @@
 .official-control-bar span,
 .admin-actions-copy span { margin-top: 4px; color: #8caeaa; font-size: .8rem; }
 .official-card { display: grid; grid-template-columns: 76px minmax(0,1fr); align-items: center; gap: 15px; padding: 16px; border-radius: 16px; box-shadow: 0 12px 30px rgba(0,0,0,.1); }
+.official-card.official-card--empty { min-height: 132px; grid-template-columns: 54px minmax(0,1fr); border: 1px dashed rgba(142,236,224,.38); background: rgba(255,255,255,.025); box-shadow: none; }
+.official-card.official-card--occupied { border: 1px solid rgba(0,227,194,.22); background: rgba(10,28,35,.76); }
 .official-card img { width: 76px; height: 76px; border-radius: 13px; }
 .official-card-copy span { color: #00e3c2; font-size: .68rem; }
 .official-card-copy h3 { font-size: 1.05rem; }
 .official-card-copy p { font-size: .82rem; }
 .official-card-actions { grid-column: 1/-1; display: flex; gap: 7px; padding-top: 11px; border-top: 1px solid rgba(255,255,255,.08); }
 .official-card-actions button { padding: 7px 10px; border: 0; border-radius: 8px; background: rgba(0,227,194,.1); color: #8de9dc; font: inherit; font-size: .8rem; font-weight: 800; cursor: pointer; }
+.official-card-actions .official-remove-button { background: rgba(255,133,133,.1); color: #ffabab; }
 .official-card-actions button:disabled,
 .official-card--empty button:disabled,
 .official-chart-level > .official-tier-header button:disabled { opacity: .5; cursor: not-allowed; }
@@ -199,7 +207,7 @@
 @media (max-width: 560px) {
     .official-control-bar { align-items: flex-start; flex-direction: column; }
     .official-chart-grid,.official-chart-grid--middle,.official-modal-form { grid-template-columns: 1fr; }
-    .official-card--empty { grid-template-columns: 1fr; }
+    .official-card.official-card--empty { grid-template-columns: 44px minmax(0,1fr); }
     .official-modal-form label.full,.official-modal-actions { grid-column: auto; }
     .official-modal-actions { align-items: stretch; flex-direction: column; }
 }
