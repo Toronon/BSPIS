@@ -262,7 +262,7 @@ const management = {
 
 const adminData = {};
 
-function renderOfficialCards(officials, preview = false) {
+function renderOfficialCards(officials) {
     const groups = new Map();
     officials.forEach(official => {
         const records = groups.get(official.group_name) || [];
@@ -283,8 +283,8 @@ function renderOfficialCards(officials, preview = false) {
                 ${official.description ? `<p>${escapeHtml(official.description)}</p>` : ''}
             </div>
             <div class="official-card-actions">
-                <button type="button" data-edit="officials" data-record="${escapeHtml(JSON.stringify(official))}"${preview ? ' disabled' : ''}>Edit</button>
-                <button type="button" data-delete="officials" data-id="${official.id}"${preview ? ' disabled' : ''}>Delete</button>
+                <button type="button" data-edit="officials" data-record="${escapeHtml(JSON.stringify(official))}">Edit</button>
+                <button type="button" data-delete="officials" data-id="${official.id}">Delete</button>
             </div>
         </article>` : `
         <article class="official-card official-card--empty">
@@ -292,7 +292,7 @@ function renderOfficialCards(officials, preview = false) {
             <button type="button" class="official-group-add"
                 data-add-official="${escapeHtml(group)}"
                 data-position="${escapeHtml(position)}"
-                data-rank="${rank}"${preview ? ' disabled' : ''}>Add official</button>
+                data-rank="${rank}">Add official</button>
         </article>`;
     target.innerHTML = [...groups].map(([group, records]) => {
         records.sort((left, right) => Number(left.position_rank || 99) - Number(right.position_rank || 99)
@@ -472,19 +472,20 @@ function populateForm(form, record) {
         const input = form.elements.namedItem(name);
         if (input && input.type !== 'file') input.value = value ?? '';
     }
-    if (form.id === 'official-form') {
+    const formId = form.getAttribute('id');
+    if (formId === 'official-form') {
         document.getElementById('official-modal-title').textContent = 'Edit Official';
         document.getElementById('official-modal').hidden = false;
-    } else if (form.id === 'annual-form') {
+    } else if (formId === 'annual-form') {
         document.getElementById('annual-popup').setAttribute('aria-hidden', 'false');
         document.getElementById('annual-popup').querySelector('h3').textContent = 'Edit Annual Budget';
-    } else if (form.id === 'fund-form') {
+    } else if (formId === 'fund-form') {
         document.getElementById('expense-popup').setAttribute('aria-hidden', 'false');
         document.getElementById('expense-popup').querySelector('h3').textContent = 'Edit Expense';
-    } else if (form.id === 'resident-form') {
+    } else if (formId === 'resident-form') {
         document.getElementById('resident-form-title').textContent = 'Edit Resident';
         document.getElementById('resident-save-button').textContent = 'Save Changes';
-    } else if (form.id === 'announcement-form') {
+    } else if (formId === 'announcement-form') {
         document.querySelector('.composer-panel h2').textContent = 'Edit Announcement';
         form.querySelector('button[type="submit"]').textContent = 'Save Changes';
     }
@@ -520,23 +521,24 @@ async function saveRecord(table, form) {
     if (error) throw error;
     form.reset();
     form.elements.namedItem('id').value = '';
-    if (form.id === 'official-form') {
+    const formId = form.getAttribute('id');
+    if (formId === 'official-form') {
         document.getElementById('official-modal').hidden = true;
         document.getElementById('official-modal-title').textContent = 'Add New Official';
     }
-    if (form.id === 'annual-form') {
+    if (formId === 'annual-form') {
         document.getElementById('annual-popup').setAttribute('aria-hidden', 'true');
         document.getElementById('annual-popup').querySelector('h3').textContent = 'Add Annual Budget';
     }
-    if (form.id === 'fund-form') {
+    if (formId === 'fund-form') {
         document.getElementById('expense-popup').setAttribute('aria-hidden', 'true');
         document.getElementById('expense-popup').querySelector('h3').textContent = 'Add Expense';
     }
-    if (form.id === 'announcement-form') {
+    if (formId === 'announcement-form') {
         document.querySelector('.composer-panel h2').textContent = 'Add Announcement';
         form.querySelector('button[type="submit"]').textContent = 'Add Announcement';
     }
-    if (form.id === 'resident-form') {
+    if (formId === 'resident-form') {
         window.location.assign('admin-residents.html');
         return;
     }
@@ -582,7 +584,7 @@ async function handleLogin(event) {
 async function handleAdminSubmit(event) {
     const form = event.target.closest('form');
     if (!form) return;
-    const table = Object.keys(management).find(key => management[key].form === form.id);
+    const table = Object.keys(management).find(key => management[key].form === form.getAttribute('id'));
     if (!table) return;
     event.preventDefault();
     const message = document.getElementById('admin-message');
@@ -603,6 +605,78 @@ function openOfficialModal(groupName = 'Barangay Council', position = '', rank =
     form.elements.namedItem('position_rank').value = rank || 99;
     document.getElementById('official-modal-title').textContent = 'Add New Official';
     document.getElementById('official-modal').hidden = false;
+}
+
+function setupOfficialPreview(officials) {
+    const target = document.getElementById('official-groups');
+    const form = document.getElementById('official-form');
+    const modal = document.getElementById('official-modal');
+    if (!target || !form || !modal) return;
+
+    const updateMessage = message => {
+        const status = document.getElementById('admin-message');
+        if (status) status.textContent = message;
+    };
+
+    document.getElementById('open-official-modal')?.addEventListener('click', () => openOfficialModal());
+    ['close-official-modal', 'cancel-official-modal'].forEach(id => {
+        document.getElementById(id)?.addEventListener('click', () => {
+            modal.hidden = true;
+        });
+    });
+
+    target.addEventListener('click', event => {
+        const addButton = event.target.closest('[data-add-official]');
+        if (addButton) {
+            openOfficialModal(
+                addButton.dataset.addOfficial || 'Barangay Council',
+                addButton.dataset.position || '',
+                addButton.dataset.rank || ''
+            );
+            return;
+        }
+
+        const editButton = event.target.closest('[data-edit="officials"]');
+        if (editButton) {
+            populateForm(form, JSON.parse(editButton.dataset.record));
+            return;
+        }
+
+        const deleteButton = event.target.closest('[data-delete="officials"]');
+        if (!deleteButton || !window.confirm('Remove this demo official from the preview?')) return;
+        const index = officials.findIndex(official => String(official.id) === deleteButton.dataset.id);
+        if (index !== -1) {
+            officials.splice(index, 1);
+            renderOfficialCards(officials);
+            updateMessage('Demo profile removed from this preview only. Nothing was changed in Supabase.');
+        }
+    });
+
+    form.addEventListener('submit', event => {
+        event.preventDefault();
+        const id = form.elements.namedItem('id').value;
+        const values = formValues(form);
+        values.position_rank = Number(values.position_rank);
+        if (id) {
+            const existing = officials.find(official => String(official.id) === String(id));
+            if (!existing) return;
+            Object.assign(existing, values);
+            updateMessage('Demo profile updated in this preview only. Nothing was changed in Supabase.');
+        } else {
+            officials.push({
+                id: `preview-${crypto.randomUUID()}`,
+                ...values,
+                image: '',
+                description: values.description || ''
+            });
+            updateMessage('Demo profile added to this preview only. Nothing was changed in Supabase.');
+        }
+        form.reset();
+        form.elements.namedItem('id').value = '';
+        modal.hidden = true;
+        document.getElementById('official-modal-title').textContent = 'Add New Official';
+        renderOfficialCards(officials);
+    });
 }
 
 async function handleAdminAction(event) {
@@ -733,14 +807,21 @@ function start() {
             { id: 'preview-sk-chair', name: 'Carlo Mendoza', position: 'SK Chairperson', group_name: 'Sangguniang Kabataan', position_rank: 1 },
             { id: 'preview-sk-secretary', name: 'Liza Bautista', position: 'Secretary', group_name: 'Sangguniang Kabataan', position_rank: 2 },
             { id: 'preview-sk-treasurer', name: 'Mark Flores', position: 'Treasurer', group_name: 'Sangguniang Kabataan', position_rank: 3 },
-            { id: 'preview-sk-kagawad', name: 'Nina Cruz', position: 'SK Kagawad', group_name: 'Sangguniang Kabataan', position_rank: 4 }
+            { id: 'preview-sk-kagawad-1', name: 'Nina Cruz', position: 'SK Kagawad', group_name: 'Sangguniang Kabataan', position_rank: 4, description: 'Temporary demo profile — Youth Development' },
+            { id: 'preview-sk-kagawad-2', name: 'Paolo Garcia', position: 'SK Kagawad', group_name: 'Sangguniang Kabataan', position_rank: 5, description: 'Temporary demo profile — Sports and Recreation' },
+            { id: 'preview-sk-kagawad-3', name: 'Mika Santos', position: 'SK Kagawad', group_name: 'Sangguniang Kabataan', position_rank: 6, description: 'Temporary demo profile — Education' },
+            { id: 'preview-sk-kagawad-4', name: 'Joshua Reyes', position: 'SK Kagawad', group_name: 'Sangguniang Kabataan', position_rank: 7, description: 'Temporary demo profile — Health and Wellness' },
+            { id: 'preview-sk-kagawad-5', name: 'Angela Ramos', position: 'SK Kagawad', group_name: 'Sangguniang Kabataan', position_rank: 8, description: 'Temporary demo profile — Environment' },
+            { id: 'preview-sk-kagawad-6', name: 'Daniel Cruz', position: 'SK Kagawad', group_name: 'Sangguniang Kabataan', position_rank: 9, description: 'Temporary demo profile — Arts and Culture' },
+            { id: 'preview-sk-kagawad-7', name: 'Patricia Flores', position: 'SK Kagawad', group_name: 'Sangguniang Kabataan', position_rank: 10, description: 'Temporary demo profile — Community Projects' }
         ];
         const message = document.getElementById('admin-message');
         if (message) {
             message.textContent = 'Layout preview only — sample names are shown. No Supabase data can be changed here.';
             message.classList.add('official-preview-notice');
         }
-        renderOfficialCards(previewOfficials, true);
+        renderOfficialCards(previewOfficials);
+        setupOfficialPreview(previewOfficials);
         return;
     }
     if (!configured) {
