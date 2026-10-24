@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Create Admin Account - BSPIS</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body class="login-body" data-page="lgu-create-admin">
+    <main class="login-page"><div class="login-shell">
+        <section class="login-visual" aria-label="LGU account management">
+            <div class="visual-brand"><img src="assets/logo/logo.png" alt="BSPI logo"><span>BSPIS</span></div>
+            <div class="visual-copy"><p class="visual-kicker">LGU account management</p><h1>Invite an administrator securely.</h1><p>Create an authorized administrator account for the barangay management workspace.</p></div>
+            <div class="visual-line" aria-hidden="true"></div><p class="visual-caption">Authorized LGU access</p>
+        </section>
+        <section class="login-container">
+            <button class="back-home back-home-button" id="logout-button" type="button">Sign out</button>
+            <div class="login-heading"><p class="login-kicker">LGU account</p><h2>Create Admin Account</h2><p>Signed in as <strong id="lgu-email">LGU</strong>. Enter the administrator’s email to send an invitation.</p></div>
+            <p id="lgu-message" class="login-error" role="alert" hidden></p>
+            <form id="create-admin-form" method="post" action="lgu-create-admin.html" onsubmit="return window.BSPIS_LGU_READY === true" hidden>
+                <div class="login-field"><label for="admin-email">New admin email</label><input id="admin-email" type="email" name="email" autocomplete="email" placeholder="Enter the administrator’s email" required></div>
+                <button type="submit">Send admin invitation <span aria-hidden="true">&rarr;</span></button>
+            </form>
+            <p class="login-note">The invited administrator sets their own password using the secure email link.</p>
+        </section>
+    </div></main>
+    <script src="scripts/config.js"></script><script type="module" src="scripts/site.js"></script>
+</body>
+</html>
