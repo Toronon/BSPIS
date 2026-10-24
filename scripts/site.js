@@ -50,35 +50,79 @@ function renderOfficials(officials, container) {
         map.set(official.group_name, records);
         return map;
     }, new Map());
-    const homePage = container.id === 'home-officials';
-    const groupMarkup = ([group, records]) => {
-        const isYouthCouncil = /sangguniang kabataan|\bsk\b/i.test(group || '');
-        const tiers = [[], [], []];
-        records.forEach(official => {
-            const rank = Number(official.position_rank) || 99;
-            tiers[rank <= 1 ? 0 : rank <= 3 ? 1 : 2].push(official);
-        });
-        const tierMarkup = (items, label, modifier, showDescription) => items.length ? `
-            <p class="${homePage ? 'public-directory-tier-label' : 'public-tier-label'}">${label}</p>
-            <div class="${homePage ? 'public-directory-tier' : 'public-tier'} ${modifier ? `${homePage ? 'public-directory-tier' : 'public-tier'}--${modifier}` : ''}">
-                ${items.map(official => `
-                    <article class="${homePage ? 'public-directory-card' : 'public-official-card'}">
-                        <img src="${escapeHtml(imageUrl(official.image, 'officials'))}" alt="${escapeHtml(officialPositionLabel(official))}">
-                        <div><small>${escapeHtml(officialPositionLabel(official))}</small><h3>${escapeHtml(official.name)}</h3>
-                            ${showDescription && official.description ? `<p>${escapeHtml(official.description)}</p>` : ''}
-                        </div>
-                    </article>`).join('')}
-            </div>` : '';
-        return `<section class="${homePage ? 'public-directory-group' : 'public-official-group'}">
-            <div class="${homePage ? 'public-directory-group-heading' : 'public-official-group-heading'}">
-                <h2>${escapeHtml(group)}</h2><span>${records.length} profiles</span>
+    const fixedGroups = ['Barangay Council', 'Sangguniang Kabataan'];
+    fixedGroups.forEach(group => {
+        if (!groups.has(group)) groups.set(group, []);
+    });
+    const orderedGroups = [
+        ...fixedGroups,
+        ...[...groups.keys()].filter(group => !fixedGroups.includes(group)).sort((left, right) => left.localeCompare(right))
+    ];
+    const officialCard = (official, position) => {
+        const label = official ? officialPositionLabel(official) : position;
+        return `<article class="public-official-card ${official ? 'public-official-card--occupied' : 'public-official-card--empty'}">
+            <img src="${escapeHtml(imageUrl(official?.image || '', 'officials'))}" alt="${official ? escapeHtml(label) : ''}">
+            <div class="public-official-card-copy">
+                <small>${escapeHtml(label)}</small>
+                <h3>${escapeHtml(official?.name || 'Vacant')}</h3>
+                ${official?.description ? `<p>${escapeHtml(official.description)}</p>` : ''}
             </div>
-            ${tierMarkup(tiers[0], isYouthCouncil ? 'SK Chairperson' : 'Barangay Captain', 'top', true)}
-            ${tierMarkup(tiers[1], 'Secretary & Treasurer', 'middle', false)}
-            ${tierMarkup(tiers[2], 'Kagawad / Councilors', 'bottom', false)}
+        </article>`;
+    };
+    const renderGroup = group => {
+        const records = groups.get(group);
+        const isYouthCouncil = /sangguniang kabataan|\bsk\b/i.test(group || '');
+        const chairmanTitle = isYouthCouncil ? 'SK Chairperson' : 'Barangay Captain';
+        const byRank = rank => records.find(official => Number(official.position_rank) === rank);
+        const assignedCouncilors = new Set();
+        const councilorSlots = Array.from({ length: 7 }, (_, index) => {
+            const rank = index + 4;
+            const official = byRank(rank);
+            if (official) assignedCouncilors.add(official.id);
+            return officialCard(official, `${isYouthCouncil ? 'SK ' : ''}Kagawad ${index + 1}`);
+        });
+        const extraOfficials = records.filter(official => {
+            const rank = Number(official.position_rank);
+            return rank > 10 || (rank >= 4 && rank <= 10 && !assignedCouncilors.has(official.id));
+        });
+        const chart = fixedGroups.includes(group) ? `
+            <div class="public-org-chart">
+                <section class="public-chart-level">
+                    <h3 class="public-tier-label">${chairmanTitle}</h3>
+                    <div class="public-chart-grid public-chart-grid--top">${officialCard(byRank(1), chairmanTitle)}</div>
+                </section>
+                <div class="public-chart-connector" aria-hidden="true"></div>
+                <section class="public-chart-level">
+                    <h3 class="public-tier-label">Secretary &amp; Treasurer</h3>
+                    <div class="public-chart-grid public-chart-grid--middle">
+                        ${officialCard(byRank(2), 'Secretary')}
+                        ${officialCard(byRank(3), 'Treasurer')}
+                    </div>
+                </section>
+                <div class="public-chart-connector" aria-hidden="true"></div>
+                <section class="public-chart-level">
+                    <h3 class="public-tier-label">${isYouthCouncil ? 'SK Kagawad Positions' : 'Kagawad Positions'}</h3>
+                    <div class="public-chart-grid">${councilorSlots.join('')}</div>
+                    ${extraOfficials.length ? `<div class="public-chart-grid public-chart-grid--extras">
+                        ${extraOfficials.map(official => officialCard(official, officialPositionLabel(official))).join('')}
+                    </div>` : ''}
+                </section>
+            </div>` : `
+            <div class="public-org-chart">
+                <section class="public-chart-level">
+                    <div class="public-chart-grid">
+                        ${records.map(official => officialCard(official, officialPositionLabel(official))).join('')}
+                    </div>
+                </section>
+            </div>`;
+        return `<section class="public-official-group">
+            <div class="public-official-group-heading">
+                <h2>${escapeHtml(group || 'Other')}</h2><span>${records.length} profiles</span>
+            </div>
+            ${chart}
         </section>`;
     };
-    container.innerHTML = [...groups].map(groupMarkup).join('') || '<p>No officials have been added yet.</p>';
+    container.innerHTML = orderedGroups.map(renderGroup).join('');
 }
 
 async function loadOfficials() {
@@ -326,7 +370,7 @@ function renderOfficialCards(officials) {
             return rank > 10 || (rank >= 4 && rank <= 10 && !assignedCouncilors.has(record.id));
         });
         const chairLabel = isYouthCouncil ? 'SK Chairperson' : 'Barangay Captain';
-        const councilorHeading = isYouthCouncil ? 'Seven SK Kagawad positions' : 'Seven Kagawad positions';
+        const councilorHeading = isYouthCouncil ? 'SK Kagawad Positions' : 'Kagawad Positions';
         const chartTiers = `
             <section class="official-chart-level">
                 <h3 class="official-tier-label">${chairLabel}</h3>
