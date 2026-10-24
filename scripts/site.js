@@ -288,12 +288,7 @@ function renderOfficialCards(officials) {
             </div>
         </article>` : `
         <article class="official-card official-card--empty">
-            <div class="official-empty-avatar" aria-hidden="true">
-                <svg viewBox="0 0 48 48" focusable="false">
-                    <circle cx="24" cy="16" r="9"></circle>
-                    <path d="M7 42c1.8-9 8.1-14 17-14s15.2 5 17 14"></path>
-                </svg>
-            </div>
+            <img class="official-empty-avatar" src="${escapeHtml(imageUrl('', 'officials'))}" alt="">
             <div class="official-card-copy">
                 <span>${escapeHtml(position)}</span>
                 <h3>Vacant</h3>
