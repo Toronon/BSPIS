@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Funds Management - BSPIS</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/funds.css">
+    <link rel="stylesheet" href="styles/admin.css">
+</head>
+<body data-page="admin-funds" class="funds-admin-page">
+    <header class="site-header"><div class="header-container">
+        <a class="logo" href="admin.html"><img src="assets/logo/logo.png" alt=""><span>BSPIS</span></a>
+        <button class="menu-toggle" type="button" aria-label="Toggle navigation">☰</button>
+        <nav class="nav">
+            <a href="index.html">Public site</a><a href="admin-officials.html">Officials</a>
+            <a href="admin-residents.html">Residents</a><a href="admin-funds.html">Funds</a>
+            <a href="admin-announcements.html">Announcements</a>
+            <button class="btn" id="logout-button" type="button">Logout</button>
+        </nav>
+    </div></header>
+    <p id="admin-message" role="status"></p>
+    <main class="funds-wrapper">
+        <aside class="funds-sidebar">
+            <div class="budget-card"><h2>Current Budget</h2><span id="admin-current-budget">₱0.00</span></div>
+            <form class="year-filter" id="admin-fund-year-form"><label for="admin-fund-year">Fiscal Year</label><select id="admin-fund-year"><option value="">Select Year</option></select></form>
+            <div class="sidebar-actions"><button id="open-annual-btn" class="sidebar-btn" type="button">Add Annual Budget</button></div>
+            <section class="section-panel">
+                <div class="section-title-row"><h2>Annual Budgets</h2><span class="status-pill">Budget</span></div>
+                <div id="annual-list-admin"><div class="empty-state">Loading annual budgets…</div></div>
+            </section>
+        </aside>
+        <section class="funds-feed">
+            <div class="funds-header"><div class="page-heading"><h1>Funds Dashboard</h1><p>Track annual budgets, operating expenses, and the barangay cash flow.</p></div></div>
+            <div class="admin-actions">
+                <div class="admin-actions-copy"><strong>Admin controls</strong><span>Manage expense records and review the funds activity.</span></div>
+                <div class="admin-actions-buttons"><button id="open-expense-btn" class="admin-action-btn primary" type="button">Add New Expense</button><button id="generate-report-btn" class="admin-action-btn secondary" type="button">Generate Report</button></div>
+            </div>
+            <div class="summary-grid">
+                <div class="summary-card"><span class="label">Current Budget</span><span class="value positive" id="admin-budget-summary">₱0.00</span></div>
+                <div class="summary-card"><span class="label">Annual Budgets</span><span class="value" id="admin-annual-count">0</span></div>
+                <div class="summary-card"><span class="label">Expenses</span><span class="value negative" id="admin-expense-count">0</span></div>
+            </div>
+            <section class="section-panel">
+                <div class="section-title-row"><h2>Expenses / Itemized Funds</h2><span class="status-pill">Tracked</span></div>
+                <div id="fund-list-admin"><div class="empty-state">Loading expenses…</div></div>
+            </section>
+        </section>
+    </main>
+    <div id="annual-popup" class="popup" aria-hidden="true"><div class="popup-content">
+        <button class="popup-close" type="button" data-close-popup="annual-popup" aria-label="Close">&times;</button>
+        <h3>Add Annual Budget</h3>
+        <form id="annual-form"><input type="hidden" name="id"><input type="number" name="year" placeholder="Year" required><input type="number" step="0.01" name="amount" placeholder="Amount" required><textarea name="description" placeholder="Budget Plan"></textarea><label>Image<input type="file" name="image" accept="image/*"></label><button type="submit">Post</button></form>
+    </div></div>
+    <div id="expense-popup" class="popup" aria-hidden="true"><div class="popup-content">
+        <button class="popup-close" type="button" data-close-popup="expense-popup" aria-label="Close">&times;</button>
+        <h3>Add Expense</h3>
+        <form id="fund-form"><input type="hidden" name="id"><input type="hidden" name="year"><input type="number" step="0.01" name="amount" placeholder="Amount" required><input type="text" name="fund_name" placeholder="Title" required><textarea name="description" placeholder="Description"></textarea><select name="quarter" required><option value="" disabled selected>Select Quarter</option><option value="Q1">1st Quarter</option><option value="Q2">2nd Quarter</option><option value="Q3">3rd Quarter</option><option value="Q4">4th Quarter</option></select><label>Image<input type="file" name="image" accept="image/*"></label><button type="submit">Post</button></form>
+    </div></div>
+    <footer class="site-footer"><p>&copy; <span data-year></span> BSPI. All rights reserved.</p></footer>
+    <script src="scripts/config.js"></script><script type="module" src="scripts/site.js"></script>
+</body>
+</html>

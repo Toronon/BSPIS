@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Residents Management - BSPIS</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/admin.css">
+</head>
+<body data-page="admin-residents">
+    <header class="site-header"><div class="header-container">
+        <a class="logo" href="admin.html"><img src="assets/logo/logo.png" alt=""><span>BSPIS</span></a>
+        <button class="menu-toggle" type="button" aria-label="Toggle navigation">☰</button>
+        <nav class="nav">
+            <a href="index.html">Public site</a><a href="admin-officials.html">Officials</a>
+            <a href="admin-residents.html">Residents</a><a href="admin-funds.html">Funds</a>
+            <a href="admin-announcements.html">Announcements</a>
+            <button class="btn" id="logout-button" type="button">Logout</button>
+        </nav>
+    </div></header>
+    <main class="main-content fade-in">
+        <div class="residents-header">
+            <h1>Brgy. San Pablo Residents</h1>
+            <a href="admin-resident-form.html" class="add-resident-btn">Add Resident</a>
+        </div>
+        <form class="search-form" id="resident-search">
+            <input type="search" name="search" placeholder="Search residents..." aria-label="Search residents">
+            <select name="purok" aria-label="Filter by purok">
+                <option value="">All Puroks</option><option value="1">Purok 1</option>
+                <option value="2">Purok 2</option><option value="3">Purok 3</option>
+            </select>
+            <button type="submit">Search</button>
+        </form>
+        <p id="admin-message" role="status"></p>
+        <div class="table-wrap"><table>
+            <thead><tr><th>Num</th><th>Firstname</th><th>Middlename</th><th>Lastname</th><th>Birthdate</th><th>Gender</th><th>Marital</th><th>Contact</th><th>Purok</th><th>Actions</th></tr></thead>
+            <tbody id="resident-rows"></tbody>
+        </table></div>
+    </main>
+    <footer class="site-footer"><p>&copy; <span data-year></span> BSPI. All rights reserved.</p></footer>
+    <script src="scripts/config.js"></script><script type="module" src="scripts/site.js"></script>
+</body>
+</html>

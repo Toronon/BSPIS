@@ -39,6 +39,62 @@
     margin-bottom: 40px;
 }
 
+.public-directory { padding-bottom: 64px; }
+.public-directory-header { padding: 54px 0 26px; }
+.public-directory-header h1 { margin: 0 0 10px; color: #f4fffd; font-family: Georgia, serif; font-size: clamp(2.3rem, 5vw, 4rem); }
+.public-directory-header p:last-child,
+.public-officials-header p:last-child { color: #9db8b8; }
+.public-directory-group,
+.public-official-group { margin-bottom: 34px; padding: 24px; border: 1px solid rgba(142,236,224,.13); border-radius: 18px; background: rgba(10,28,35,.6); }
+.public-directory-group-heading,
+.public-official-group-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+.public-directory-group-heading h2,
+.public-official-group-heading h2 { margin: 0; color: #f4fffd; font-size: 1.5rem; }
+.public-directory-group-heading span,
+.public-official-group-heading span { color: #8de9dc; font-size: .78rem; }
+.public-directory-tier,
+.public-tier { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; margin-top: 14px; }
+.public-directory-tier--top,
+.public-tier--top { display: flex; justify-content: center; }
+.public-directory-tier--middle,
+.public-tier--middle { grid-template-columns: repeat(2,minmax(0,260px)); justify-content: center; }
+.public-directory-tier-label,
+.public-tier-label { margin: 18px 0 8px; color: #6f9d98; font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 800; }
+.public-directory-card,
+.public-tier .public-official-card { display: flex; align-items: center; gap: 14px; min-width: 0; padding: 15px; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; background: rgba(255,255,255,.045); transition: transform .22s ease,border-color .22s ease,background .22s ease,box-shadow .22s ease; }
+.public-directory-card:hover,
+.public-tier .public-official-card:hover { transform: translateY(-6px); border-color: rgba(0,227,194,.48); background: rgba(0,227,194,.1); box-shadow: 0 16px 30px rgba(0,0,0,.24); }
+.public-directory-tier--top .public-directory-card,
+.public-tier--top .public-official-card { width: min(100%,360px); }
+.public-directory-card img,
+.public-tier .public-official-card img { width: 68px; height: 68px; flex-shrink: 0; object-fit: cover; border-radius: 12px; border: 1px solid rgba(0,227,194,.2); }
+.public-directory-card div,
+.public-tier .public-official-card div { min-width: 0; }
+.public-directory-card small,
+.public-tier .public-official-card small { display: block; margin-bottom: 5px; color: #00e3c2; font-size: .65rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.public-directory-card h3,
+.public-tier .public-official-card h3 { margin: 0; color: #f4fffd; font-size: 1rem; overflow-wrap: anywhere; }
+.public-directory-card p,
+.public-tier .public-official-card p { margin: 6px 0 0; color: #9db8b8; font-size: .78rem; line-height: 1.4; }
+.public-officials-header { padding: 54px 0 32px; }
+.public-officials-header h1 { margin: 0 0 10px; color: #f4fffd; font-family: Georgia,serif; font-size: clamp(2.3rem,5vw,4rem); }
+.public-officials-page { padding-bottom: 64px; }
+
+@media (max-width: 700px) {
+    .public-directory-group,
+    .public-official-group { padding: 18px 14px; }
+    .public-directory-tier,
+    .public-directory-tier--middle,
+    .public-tier,
+    .public-tier--middle { grid-template-columns: 1fr; }
+    .public-directory-tier--top,
+    .public-tier--top { display: grid; }
+    .public-directory-tier--top .public-directory-card,
+    .public-tier--top .public-official-card { width: 100%; }
+    .public-directory-group-heading,
+    .public-official-group-heading { align-items: flex-start; flex-direction: column; gap: 7px; }
+}
+
 .official-section {
     margin-bottom: 80px;    
 }

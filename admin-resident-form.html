@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Add Resident - BSPIS</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/admin.css">
+</head>
+<body data-page="admin-resident-form">
+    <header class="site-header"><div class="header-container">
+        <a class="logo" href="admin.html"><img src="assets/logo/logo.png" alt=""><span>BSPIS</span></a>
+        <button class="menu-toggle" type="button" aria-label="Toggle navigation">☰</button>
+        <nav class="nav">
+            <a href="index.html">Public site</a><a href="admin-officials.html">Officials</a>
+            <a href="admin-residents.html">Residents</a><a href="admin-funds.html">Funds</a>
+            <a href="admin-announcements.html">Announcements</a>
+            <button class="btn" id="logout-button" type="button">Logout</button>
+        </nav>
+    </div></header>
+    <main class="main-content resident-add-page">
+        <div class="resident-add-card">
+            <header class="resident-add-header">
+                <p class="section-kicker">Resident records</p><h1 id="resident-form-title">Add Resident</h1>
+                <p>Register a new resident profile and keep the barangay records up to date.</p>
+            </header>
+            <p id="admin-message" role="status"></p>
+            <form class="resident-add-form" id="resident-form">
+                <input type="hidden" name="id">
+                <section class="resident-add-section">
+                    <h2>Personal Information</h2>
+                    <div class="resident-field"><label for="firstname">First Name</label><input id="firstname" name="firstname" required></div>
+                    <div class="resident-field"><label for="middlename">Middle Name</label><input id="middlename" name="middlename"></div>
+                    <div class="resident-field"><label for="lastname">Last Name</label><input id="lastname" name="lastname" required></div>
+                    <div class="resident-field"><label for="contactnum">Contact Number</label><input id="contactnum" type="tel" name="contactnum" inputmode="numeric" pattern="09[0-9]{9}" minlength="11" maxlength="11" placeholder="09** **** ***" required></div>
+                </section>
+                <section class="resident-add-section">
+                    <h2>Profile Details</h2>
+                    <div class="resident-field"><label for="birthdate">Birthdate</label><input id="birthdate" type="date" name="birthdate" required></div>
+                    <div class="resident-field"><label for="gender">Gender</label><select id="gender" name="gender" required><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select></div>
+                    <div class="resident-field"><label for="marital">Marital Status</label><select id="marital" name="marital" required><option value="Single">Single</option><option value="Married">Married</option><option value="Separated">Separated</option><option value="Divorced">Divorced</option><option value="Widowed">Widowed</option><option value="Annulled">Annulled</option></select></div>
+                    <div class="resident-field"><label for="purok">Purok</label><select id="purok" name="purok" required><option value="1">Purok 1</option><option value="2">Purok 2</option><option value="3">Purok 3</option></select></div>
+                </section>
+                <div class="resident-add-actions"><a href="admin-residents.html">Cancel</a><button id="resident-save-button" type="submit">Add Resident</button></div>
+            </form>
+        </div>
+    </main>
+    <footer class="site-footer"><p>&copy; <span data-year></span> BSPI. All rights reserved.</p></footer>
+    <script src="scripts/config.js"></script><script type="module" src="scripts/site.js"></script>
+</body>
+</html>

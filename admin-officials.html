@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Officials Management - BSPIS</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/admin.css">
+</head>
+<body data-page="admin-officials">
+    <header class="site-header"><div class="header-container">
+        <a class="logo" href="admin.html"><img src="assets/logo/logo.png" alt=""><span>BSPIS</span></a>
+        <button class="menu-toggle" type="button" aria-label="Toggle navigation">☰</button>
+        <nav class="nav">
+            <a href="index.html">Public site</a><a href="admin-officials.html">Officials</a>
+            <a href="admin-residents.html">Residents</a><a href="admin-funds.html">Funds</a>
+            <a href="admin-announcements.html">Announcements</a>
+            <button class="btn" id="logout-button" type="button">Logout</button>
+        </nav>
+    </div></header>
+    <main class="main-content admin-officials-page">
+        <section class="admin-officials-header"><div><p class="section-kicker">Admin workspace</p><h1>Officials directory</h1><p>Manage the organizational chart shown to the community.</p></div></section>
+        <p id="admin-message" role="status"></p>
+        <section class="official-control-bar">
+            <div><strong>Leadership records</strong><span><span id="official-count">—</span> officials - changes appear on the public directory</span></div>
+            <button class="add-official-button" id="open-official-modal" type="button">Add New Official</button>
+        </section>
+        <div id="official-groups"></div>
+    </main>
+    <div class="official-modal" id="official-modal" hidden role="dialog" aria-modal="true" aria-labelledby="official-modal-title">
+        <div class="official-modal-card">
+            <button class="official-modal-close" id="close-official-modal" type="button" aria-label="Close">&times;</button>
+            <h2 id="official-modal-title">Add New Official</h2><p>Keep the public leadership directory up to date.</p>
+            <form class="official-modal-form" id="official-form">
+                <input type="hidden" name="id">
+                <label>Full Name<input type="text" name="name" required></label>
+                <label>Position / Role<input type="text" name="position" required placeholder="Barangay Captain, Kagawad..."></label>
+                <label>Official Category<select name="group_name"><option>Barangay Council</option><option>Sangguniang Kabataan</option></select></label>
+                <label>Position Rank / Order<input type="number" name="position_rank" min="1" value="99" required></label>
+                <label class="full">Profile Image Upload<input type="file" name="image" accept="image/jpeg,image/png,image/webp"></label>
+                <label class="full">Short Description<textarea name="description" rows="3"></textarea></label>
+                <div class="official-modal-actions"><button id="cancel-official-modal" type="button" data-close-official-modal>Cancel</button><button type="submit">Save Official</button></div>
+            </form>
+        </div>
+    </div>
+    <footer class="site-footer"><p>&copy; <span data-year></span> BSPI. All rights reserved.</p></footer>
+    <script src="scripts/config.js"></script><script type="module" src="scripts/site.js"></script>
+</body>
+</html>

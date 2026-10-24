@@ -1,0 +1,184 @@
+.admin-dashboard-page { padding-bottom: 64px; }
+.admin-dashboard-header,
+.admin-officials-header { display: flex; align-items: end; justify-content: space-between; gap: 20px; padding: 55px 0 26px; }
+.admin-dashboard-header h1,
+.admin-officials-header h1 { margin: 0 0 10px; color: #f4fffd; font-family: Georgia, serif; font-size: clamp(2.2rem, 5vw, 4rem); }
+.admin-dashboard-header p:last-child,
+.admin-officials-header p:last-child { color: #9db8b8; }
+.dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-bottom: 30px; }
+.dash-card { padding: 24px 20px; border: 1px solid rgba(142,236,224,.14); border-radius: 18px; background: rgba(10,28,35,.78); color: #d7f8f3; }
+.dash-card .label { display: block; margin-bottom: 10px; font-size: .76rem; letter-spacing: .12em; text-transform: uppercase; color: #8de9dc; }
+.dash-card strong { display: block; margin: 0; font-size: 2.1rem; color: #f4fffd; }
+.dashboard-leadership { margin-top: 10px; padding: 24px; border: 1px solid rgba(142,236,224,.13); border-radius: 18px; background: rgba(10,28,35,.6); }
+.dashboard-leadership-header,
+.official-group-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+.dashboard-leadership-header h2,
+.official-group-heading h2 { margin: 0; color: #f4fffd; }
+.dashboard-leadership-header span,
+.official-group-heading span { color: #8de9dc; font-size: .75rem; }
+.admin-home-tier,
+.official-chart-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.admin-home-tier--top,
+.official-chart-grid--top { display: flex; justify-content: center; }
+.admin-home-tier--middle,
+.official-chart-grid--middle { grid-template-columns: repeat(2, minmax(0, 260px)); justify-content: center; }
+.admin-home-tier-label,
+.official-tier-label { margin: 18px 0 8px; color: #6f9d98; font-size: .68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.admin-home-official-card,
+.official-card { display: flex; align-items: center; gap: 14px; min-width: 0; padding: 15px; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; background: rgba(255,255,255,.045); }
+.admin-home-tier--top .admin-home-official-card { width: min(100%, 360px); }
+.admin-home-official-card img,
+.official-card img { width: 68px; height: 68px; flex: 0 0 auto; object-fit: cover; border-radius: 12px; border: 1px solid rgba(0,227,194,.2); }
+.admin-home-official-card div,
+.official-card-copy { min-width: 0; }
+.admin-home-official-card small,
+.official-card-copy span { display: block; margin-bottom: 5px; color: #00e3c2; font-size: .65rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.admin-home-official-card h3,
+.official-card-copy h3 { margin: 0; color: #f4fffd; font-size: 1rem; overflow-wrap: anywhere; }
+.admin-home-official-card p,
+.official-card-copy p { margin: 6px 0 0; color: #9db8b8; font-size: .78rem; line-height: 1.4; }
+.admin-officials-page { padding-bottom: 70px; }
+.admin-officials-header { padding-top: 55px; }
+.official-control-bar,
+.admin-actions { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 28px; padding: 16px 18px; border: 1px solid rgba(142,236,224,.14); border-radius: 16px; background: rgba(10,28,35,.78); }
+.official-control-bar strong,
+.official-control-bar span,
+.admin-actions-copy strong,
+.admin-actions-copy span { display: block; }
+.official-control-bar strong,
+.admin-actions-copy strong { color: #f4fffd; }
+.official-control-bar span,
+.admin-actions-copy span { margin-top: 4px; color: #8caeaa; font-size: .8rem; }
+.official-group { margin-bottom: 34px; }
+.official-group-heading { margin-bottom: 14px; }
+.official-group-heading h2 { font-size: 1.35rem; }
+.official-card { display: grid; grid-template-columns: 76px minmax(0,1fr); align-items: center; gap: 15px; padding: 16px; border-radius: 16px; box-shadow: 0 12px 30px rgba(0,0,0,.1); }
+.official-card img { width: 76px; height: 76px; border-radius: 13px; }
+.official-card-copy span { color: #00e3c2; font-size: .68rem; }
+.official-card-copy h3 { font-size: 1.05rem; }
+.official-card-copy p { font-size: .82rem; }
+.official-card-actions { grid-column: 1/-1; display: flex; gap: 7px; padding-top: 11px; border-top: 1px solid rgba(255,255,255,.08); }
+.official-card-actions button { padding: 7px 10px; border: 0; border-radius: 8px; background: rgba(0,227,194,.1); color: #8de9dc; font: inherit; font-size: .8rem; font-weight: 800; cursor: pointer; }
+.official-card-actions button:last-child { background: rgba(255,133,133,.1); color: #ffabab; }
+.official-card-actions button:last-child:hover,
+.announcement-actions .btn-delete:hover,
+.funds-admin-page .post-actions .delete-btn:hover { filter: brightness(1.12); }
+.official-modal { position: fixed; inset: 0; z-index: 1100; display: grid; place-items: center; padding: 20px; background: rgba(2,10,14,.76); backdrop-filter: blur(8px); }
+.official-modal[hidden] { display: none; }
+.official-modal-card { position: relative; width: min(100%,620px); max-height: 90vh; overflow: auto; padding: 26px; border: 1px solid rgba(142,236,224,.18); border-radius: 18px; background: #0b2028; box-shadow: 0 28px 80px rgba(0,0,0,.38); }
+.official-modal-card h2 { margin: 0; color: #f4fffd; }
+.official-modal-card > p { margin-top: 6px; color: #8caeaa; }
+.official-modal-close { position: absolute; top: 14px; right: 16px; border: 0; background: none; color: #cfe2df; font-size: 1.7rem; cursor: pointer; }
+.official-modal-form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 22px; }
+.official-modal-form label { display: grid; gap: 7px; color: #cfe2df; font-size: .8rem; font-weight: 700; }
+.official-modal-form label.full,
+.official-modal-actions { grid-column: 1/-1; }
+.official-modal-form input,
+.official-modal-form select,
+.official-modal-form textarea { width: 100%; padding: 11px 12px; border: 1px solid #29484e; border-radius: 8px; background: #07171d; color: #f4fffd; font: inherit; }
+.official-modal-form textarea { resize: vertical; }
+.official-modal-actions { display: flex; justify-content: flex-end; gap: 8px; padding-top: 5px; }
+.official-modal-actions button,
+.add-official-button { display: inline-flex; align-items: center; justify-content: center; padding: 10px 14px; border: 0; border-radius: 8px; background: #00e3c2; color: #06201f; font: inherit; font-size: .8rem; font-weight: 800; cursor: pointer; }
+.official-modal-actions [data-close-official-modal] { background: rgba(255,255,255,.08); color: #cfe2df; }
+.residents-header { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 24px; }
+.residents-header h1 { margin: 0; }
+.residents-header .add-resident-btn { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; text-decoration: none; border-radius: 8px; }
+.resident-add-card { width: min(100%, 900px); margin: 0 auto; padding: 28px; border: 1px solid rgba(142,236,224,.16); border-radius: 18px; background: rgba(10,28,35,.76); box-shadow: 0 25px 70px rgba(0,0,0,.2); }
+.resident-add-header { margin-bottom: 24px; }
+.resident-add-header h1 { margin: 0 0 8px; color: #f4fffd; font-size: clamp(2rem,4vw,3rem); font-family: Georgia,serif; }
+.resident-add-header p { margin: 0; color: #9db8b8; }
+.resident-add-form { display: grid; gap: 22px; }
+.resident-add-section { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.08); }
+.resident-add-section h2 { grid-column: 1/-1; margin: 0; color: #00e3c2; font-size: .92rem; letter-spacing: .12em; text-transform: uppercase; }
+.resident-field { display: grid; gap: 8px; }
+.resident-field label { color: #cfe2df; font-size: .8rem; font-weight: 700; }
+.resident-field input,
+.resident-field select { width: 100%; padding: 12px 13px; border: 1px solid #29484e; border-radius: 8px; background: #07171d; color: #f4fffd; font: inherit; }
+.resident-add-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 4px; }
+.resident-add-actions a,
+.resident-add-actions button { display: inline-flex; align-items: center; justify-content: center; padding: 12px 18px; border: 0; border-radius: 8px; font: inherit; font-weight: 800; text-decoration: none; cursor: pointer; }
+.resident-add-actions a { background: rgba(255,255,255,.08); color: #dfe9e8; }
+.resident-add-actions button { background: #00e3c2; color: #06201f; }
+.admin-actions { padding: 14px 16px; margin-bottom: 20px; border-color: rgba(0,255,213,.14); box-shadow: 0 16px 34px rgba(0,0,0,.12); }
+.admin-actions-copy span { color: #9bc3c0; }
+.admin-actions-buttons { display: flex; flex-wrap: wrap; gap: 9px; }
+.admin-action-btn { border: 0; border-radius: 10px; padding: 10px 14px; cursor: pointer; font: inherit; font-size: .82rem; font-weight: 800; }
+.admin-action-btn.primary { background: linear-gradient(135deg,#00ffd5,#32d9b7); color: #071017; }
+.admin-action-btn.secondary { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); color: #e8fffb; }
+.funds-admin-page { background: radial-gradient(circle at top left,rgba(0,255,213,.12),transparent 25%),radial-gradient(circle at bottom right,rgba(68,155,255,.10),transparent 22%),linear-gradient(180deg,#04181d 0%,#081f27 100%); }
+.funds-admin-page .funds-wrapper { max-width: 1320px; padding-top: 104px; grid-template-columns: minmax(180px,220px) minmax(0,1fr); gap: 24px; }
+.funds-admin-page .funds-sidebar { position: sticky; top: 105px; align-self: start; }
+.funds-admin-page .budget-card { background: linear-gradient(160deg,rgba(17,44,54,.96),rgba(8,24,31,.95)); border: 1px solid rgba(0,255,213,.18); box-shadow: 0 20px 40px rgba(0,0,0,.18); border-radius: 22px; padding: 22px 18px; }
+.funds-admin-page .section-panel { background: rgba(10,26,33,.78); border-color: rgba(144,218,206,.12); border-radius: 20px; }
+.funds-admin-page .fund-post { background: rgba(19,31,38,.88); }
+.funds-admin-page .sidebar-actions { display: flex; flex-direction: column; gap: 10px; }
+.funds-admin-page .sidebar-btn { padding: 12px; border: 0; border-radius: 12px; background: linear-gradient(135deg,#00ffd5,#32d9b7); color: #071017; font: inherit; font-weight: 800; cursor: pointer; }
+.funds-admin-page .funds-sidebar .fund-post { padding: 16px; }
+.funds-admin-page .post-actions { display: flex; gap: 8px; margin-top: 12px; }
+.funds-admin-page .post-actions button { padding: 8px 11px; border: 0; border-radius: 7px; background: rgba(0,227,194,.14); color: #8de9dc; font: inherit; cursor: pointer; }
+.funds-admin-page .post-actions .delete-btn { background: rgba(255,133,133,.12); color: #ffabab; }
+.funds-admin-page .popup { position: fixed; inset: 0; z-index: 1200; display: none; align-items: center; justify-content: center; padding: 20px; background: rgba(0,0,0,.65); }
+.funds-admin-page .popup[aria-hidden="false"] { display: flex; }
+.funds-admin-page .popup-content { position: relative; width: min(100%,450px); padding: 25px; border: 1px solid rgba(0,255,213,.18); border-radius: 16px; background: #0b2028; }
+.funds-admin-page .popup-content h3 { margin: 0 0 18px; color: #f4fffd; }
+.funds-admin-page .popup-content form { display: grid; gap: 12px; }
+.funds-admin-page .popup-content input,
+.funds-admin-page .popup-content textarea,
+.funds-admin-page .popup-content select { width: 100%; padding: 12px; border: 1px solid #29484e; border-radius: 8px; background: #07171d; color: #f4fffd; font: inherit; }
+.funds-admin-page .popup-content textarea { min-height: 110px; resize: vertical; }
+.funds-admin-page .popup-content button[type="submit"] { padding: 12px; border: 0; border-radius: 8px; background: #00e3c2; color: #06201f; font: inherit; font-weight: 800; cursor: pointer; }
+.funds-admin-page .popup-close { position: absolute; top: 8px; right: 14px; border: 0; background: none; color: #cfe2df; font-size: 1.8rem; cursor: pointer; }
+.funds-admin-page .year-filter { display: grid; gap: 8px; }
+.funds-admin-page .year-filter select { padding: 10px; border: 1px solid #29484e; border-radius: 8px; background: #07171d; color: #f4fffd; }
+#admin-message { margin-bottom: 18px; color: #ffaaaa; }
+.announcement-admin #admin-message { grid-column: 1 / -1; }
+.announcement-admin .published-panel { min-width: 0; }
+.announcement-admin .published-announcements-grid { display: grid; gap: 16px; }
+.announcement-admin .published-announcement-card { display: grid; grid-template-columns: minmax(120px, 180px) minmax(0, 1fr); gap: 16px; padding: 16px; border: 1px solid rgba(142,236,224,.12); border-radius: 12px; background: rgba(255,255,255,.04); }
+.announcement-admin .published-announcement-media img { display: block; width: 100%; max-height: 150px; border-radius: 8px; object-fit: cover; }
+.announcement-admin .published-announcement-no-image { display: grid; min-height: 100px; place-items: center; border: 1px dashed rgba(142,236,224,.2); border-radius: 8px; color: #8caeaa; font-size: .8rem; text-align: center; }
+.announcement-admin .published-announcement-meta { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 8px; color: #8de9dc; font-size: .72rem; }
+.announcement-admin .published-announcement-body h3 { margin: 0 0 8px; color: #f4fffd; }
+.announcement-admin .published-announcement-body p { color: #a9c4c1; line-height: 1.5; overflow-wrap: anywhere; }
+.announcement-admin .announcement-actions { display: flex; gap: 8px; margin-top: 12px; }
+.announcement-admin .announcement-actions button { padding: 8px 11px; border: 0; border-radius: 7px; background: rgba(0,227,194,.14); color: #8de9dc; font: inherit; font-weight: 700; cursor: pointer; }
+.announcement-admin .announcement-actions .btn-delete { background: rgba(255,133,133,.12); color: #ffabab; }
+.announcement-admin .composer-panel form label { display: grid; gap: 8px; color: #cfe2df; font-weight: 700; }
+.announcement-admin .composer-panel input,
+.announcement-admin .composer-panel textarea { width: 100%; padding: 12px; border: 1px solid #29484e; border-radius: 8px; background: #07171d; color: #f4fffd; font: inherit; }
+.announcement-admin .composer-panel textarea { min-height: 120px; resize: vertical; }
+.announcement-admin .composer-panel button { padding: 12px 16px; border: 0; border-radius: 8px; background: #00e3c2; color: #06201f; font: inherit; font-weight: 800; cursor: pointer; }
+.announcement-admin .announcement-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 800px) {
+    .admin-dashboard-header,.admin-officials-header { align-items: flex-start; flex-direction: column; }
+    .admin-home-tier,.admin-home-tier--middle,.official-chart-grid,.official-chart-grid--middle { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .admin-home-tier--top,.official-chart-grid--top { display: grid; }
+    .admin-home-tier--top .admin-home-official-card { width: 100%; }
+    .dashboard-leadership-header { align-items: flex-start; flex-direction: column; }
+    .funds-admin-page .funds-wrapper { grid-template-columns: 1fr; }
+    .funds-admin-page .funds-sidebar { position: static; max-width: none; max-height: none; overflow: visible; }
+    .announcement-admin { grid-template-columns: 1fr; }
+    .announcement-admin .announcement-page-header,
+    .announcement-admin #admin-message,
+    .announcement-admin .composer-panel,
+    .announcement-admin .published-panel { grid-column: 1; grid-row: auto; }
+}
+@media (max-width: 640px) {
+    .residents-header { align-items: stretch; flex-direction: column; gap: 14px; }
+    .residents-header .add-resident-btn { width: 100%; }
+    .resident-add-card { padding: 22px 16px; }
+    .resident-add-section { grid-template-columns: 1fr; }
+    .resident-add-actions,.admin-actions { align-items: stretch; flex-direction: column; }
+    .resident-add-actions a,.resident-add-actions button { width: 100%; }
+    .admin-actions-buttons { display: grid; grid-template-columns: 1fr 1fr; }
+    .admin-action-btn { width: 100%; }
+    .announcement-admin .announcement-form-grid,
+    .announcement-admin .published-announcement-card { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+    .official-control-bar { align-items: flex-start; flex-direction: column; }
+    .official-chart-grid,.official-chart-grid--middle,.official-modal-form { grid-template-columns: 1fr; }
+    .official-modal-form label.full,.official-modal-actions { grid-column: auto; }
+    .official-modal-actions { align-items: stretch; flex-direction: column; }
+}

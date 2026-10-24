@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Announcements Management - BSPIS</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/announcements.css">
+    <link rel="stylesheet" href="styles/admin.css">
+</head>
+<body data-page="admin-announcements">
+    <header class="site-header"><div class="header-container">
+        <a class="logo" href="admin.html"><img src="assets/logo/logo.png" alt=""><span>BSPIS</span></a>
+        <button class="menu-toggle" type="button" aria-label="Toggle navigation">☰</button>
+        <nav class="nav">
+            <a href="index.html">Public site</a><a href="admin-officials.html">Officials</a>
+            <a href="admin-residents.html">Residents</a><a href="admin-funds.html">Funds</a>
+            <a href="admin-announcements.html">Announcements</a>
+            <button class="btn" id="logout-button" type="button">Logout</button>
+        </nav>
+    </div></header>
+    <main class="main-content announcements-layout announcement-admin">
+        <header class="public-page-header announcement-page-header">
+            <div><p class="section-kicker">Admin workspace</p><h1>Announcements</h1><p class="page-description">Create, publish, and manage updates for the community.</p></div>
+        </header>
+        <p id="admin-message" role="status"></p>
+        <section class="add-form composer-panel">
+            <div class="section-heading"><div><p class="section-kicker">Content management</p><h2>Add Announcement</h2></div></div>
+            <form id="announcement-form">
+                <input type="hidden" name="id">
+                <div class="announcement-form-grid">
+                    <label><span>Title</span><input type="text" name="title" placeholder="Announcement title" required></label>
+                    <label><span>Publish date</span><input type="date" name="publish_date" required></label>
+                </div>
+                <label><span>Message</span><textarea name="message" placeholder="Write the announcement message..." required></textarea></label>
+                <label class="file-field"><span>Image <small>(optional)</small></span><input type="file" name="image" accept="image/jpeg,image/png,image/gif,image/webp"></label>
+                <button type="submit" name="add_announcement">Add Announcement</button>
+            </form>
+        </section>
+        <section class="published-panel">
+            <div class="table-header published-toolbar">
+                <div><p class="section-kicker">Published content</p><h2>All Announcements</h2><p class="announcement-count" id="announcement-count">Loading announcements…</p></div>
+                <input type="search" id="announcement-search" placeholder="Search..." aria-label="Search announcements">
+            </div>
+            <section class="table-section"><div class="published-announcements-grid" id="announcement-list-admin"></div></section>
+        </section>
+    </main>
+    <footer class="site-footer"><p>&copy; <span data-year></span> BSPI. All rights reserved.</p></footer>
+    <script src="scripts/config.js"></script><script type="module" src="scripts/site.js"></script>
+</body>
+</html>
