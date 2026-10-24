@@ -242,58 +242,84 @@ const management = {
 
 const adminData = {};
 
-function renderOfficialCards(officials) {
+function renderOfficialCards(officials, preview = false) {
     const groups = new Map();
     officials.forEach(official => {
         const records = groups.get(official.group_name) || [];
         records.push(official);
         groups.set(official.group_name, records);
     });
+    ['Barangay Council', 'Sangguniang Kabataan'].forEach(group => {
+        if (!groups.has(group)) groups.set(group, []);
+    });
     const target = document.getElementById('official-groups');
     if (!target) return;
-    const tierHtml = (records, label, modifier) => {
-        if (!records.length) return '';
-        return `<section class="official-chart-level official-chart-level--${modifier || 'council'}">
-            <h3 class="official-tier-label">${label}</h3>
-            <div class="official-chart-grid${modifier ? ` official-chart-grid--${modifier}` : ''}">
-                ${records.map(official => `<article class="official-card">
-                    <img src="${escapeHtml(imageUrl(official.image, 'officials'))}" alt="${escapeHtml(official.position)}">
-                    <div class="official-card-copy">
-                        <span>${escapeHtml(official.position)}</span>
-                        <h3>${escapeHtml(official.name)}</h3>
-                        ${official.description && modifier === 'top' ? `<p>${escapeHtml(official.description)}</p>` : ''}
-                    </div>
-                    <div class="official-card-actions">
-                        <button type="button" data-edit="officials" data-record="${escapeHtml(JSON.stringify(official))}">Edit</button>
-                        <button type="button" data-delete="officials" data-id="${official.id}">Delete</button>
-                    </div>
-                </article>`).join('')}
+    const officialCard = (official, group, position, rank) => official ? `
+        <article class="official-card">
+            <img src="${escapeHtml(imageUrl(official.image, 'officials'))}" alt="${escapeHtml(official.position)}">
+            <div class="official-card-copy">
+                <span>${escapeHtml(official.position)}</span>
+                <h3>${escapeHtml(official.name)}</h3>
+                ${official.description ? `<p>${escapeHtml(official.description)}</p>` : ''}
             </div>
-        </section>`;
-    };
+            <div class="official-card-actions">
+                <button type="button" data-edit="officials" data-record="${escapeHtml(JSON.stringify(official))}"${preview ? ' disabled' : ''}>Edit</button>
+                <button type="button" data-delete="officials" data-id="${official.id}"${preview ? ' disabled' : ''}>Delete</button>
+            </div>
+        </article>` : `
+        <article class="official-card official-card--empty">
+            <div class="official-card-copy"><span>${escapeHtml(position)}</span><h3>Position available</h3></div>
+            <button type="button" class="official-group-add"
+                data-add-official="${escapeHtml(group)}"
+                data-position="${escapeHtml(position)}"
+                data-rank="${rank}"${preview ? ' disabled' : ''}>Add official</button>
+        </article>`;
     target.innerHTML = [...groups].map(([group, records]) => {
         records.sort((left, right) => Number(left.position_rank || 99) - Number(right.position_rank || 99)
             || String(left.name).localeCompare(String(right.name)));
         const isYouthCouncil = /sangguniang kabataan|\bsk\b/i.test(group || '');
-        const tiers = [[], [], []];
-        records.forEach(record => {
-            const rank = Number(record.position_rank) || 99;
-            tiers[rank <= 1 ? 0 : rank <= 3 ? 1 : 2].push(record);
-        });
-        const chartTiers = [
-            tierHtml(tiers[0], isYouthCouncil ? 'SK Chairperson' : 'Barangay Captain', 'top'),
-            tierHtml(tiers[1], 'Secretary & Treasurer', 'middle'),
-            tierHtml(tiers[2], 'Kagawad / Councilors', '')
-        ].filter(Boolean);
+        const captain = records.find(record => Number(record.position_rank) === 1);
+        const secretary = records.find(record => Number(record.position_rank) === 2);
+        const treasurer = records.find(record => Number(record.position_rank) === 3);
+        const councilors = records.filter(record => Number(record.position_rank) >= 4);
+        const chairLabel = isYouthCouncil ? 'SK Chairperson' : 'Barangay Captain';
+        const chartTiers = `
+            <section class="official-chart-level">
+                <h3 class="official-tier-label">${chairLabel}</h3>
+                <div class="official-chart-grid official-chart-grid--top">
+                    ${officialCard(captain, group, chairLabel, 1)}
+                </div>
+            </section>
+            <div class="official-chart-connector" aria-hidden="true"></div>
+            <section class="official-chart-level">
+                <h3 class="official-tier-label">Secretary &amp; Treasurer</h3>
+                <div class="official-chart-grid official-chart-grid--middle">
+                    ${officialCard(secretary, group, 'Secretary', 2)}
+                    ${officialCard(treasurer, group, 'Treasurer', 3)}
+                </div>
+            </section>
+            <div class="official-chart-connector" aria-hidden="true"></div>
+            <section class="official-chart-level">
+                <div class="official-tier-header">
+                    <h3 class="official-tier-label">Kagawad / Councilors</h3>
+                    <button type="button" class="official-group-add"
+                        data-add-official="${escapeHtml(group)}"
+                        data-position="Kagawad" data-rank="4"${preview ? ' disabled' : ''}>Add Councilor</button>
+                </div>
+                <div class="official-chart-grid">
+                    ${councilors.length
+                        ? councilors.map(official => officialCard(official, group, 'Kagawad', 4)).join('')
+                        : officialCard(null, group, 'Kagawad', 4)}
+                </div>
+            </section>`;
         return `<section class="official-group">
             <div class="official-group-heading">
-                <h2>${escapeHtml(group || 'Other')}</h2><span>${records.length} profiles</span>
+                <h2>${escapeHtml(group || 'Other')}</h2>
+                <span>${records.length} profiles</span>
             </div>
-            <div class="official-org-chart">
-                ${chartTiers.join('<div class="official-chart-connector" aria-hidden="true"></div>')}
-            </div>
+            <div class="official-org-chart">${chartTiers}</div>
         </section>`;
-    }).join('') || '<p>No officials have been added yet.</p>';
+    }).join('');
     const count = document.getElementById('official-count');
     if (count) count.textContent = officials.length;
 }
@@ -538,7 +564,28 @@ async function handleAdminSubmit(event) {
     }
 }
 
+function openOfficialModal(groupName = 'Barangay Council', position = '', rank = '') {
+    const form = document.getElementById('official-form');
+    if (!form) return;
+    form.reset();
+    form.elements.namedItem('id').value = '';
+    form.elements.namedItem('group_name').value = groupName;
+    form.elements.namedItem('position').value = position;
+    form.elements.namedItem('position_rank').value = rank || 99;
+    document.getElementById('official-modal-title').textContent = 'Add New Official';
+    document.getElementById('official-modal').hidden = false;
+}
+
 async function handleAdminAction(event) {
+    const addButton = event.target.closest('[data-add-official]');
+    if (addButton) {
+        openOfficialModal(
+            addButton.dataset.addOfficial || 'Barangay Council',
+            addButton.dataset.position || '',
+            addButton.dataset.rank || ''
+        );
+        return;
+    }
     const editButton = event.target.closest('[data-edit]');
     if (editButton) {
         const record = JSON.parse(editButton.dataset.record);
@@ -578,12 +625,7 @@ function setupAdminPage() {
     document.getElementById('logout-button')?.addEventListener('click', signOut);
     document.addEventListener('submit', handleAdminSubmit);
     document.addEventListener('click', handleAdminAction);
-    document.getElementById('open-official-modal')?.addEventListener('click', () => {
-        document.getElementById('official-form').reset();
-        document.getElementById('official-form').elements.namedItem('id').value = '';
-        document.getElementById('official-modal-title').textContent = 'Add New Official';
-        document.getElementById('official-modal').hidden = false;
-    });
+    document.getElementById('open-official-modal')?.addEventListener('click', () => openOfficialModal());
     ['close-official-modal', 'cancel-official-modal'].forEach(id => {
         document.getElementById(id)?.addEventListener('click', () => {
             document.getElementById('official-modal').hidden = true;
@@ -647,6 +689,26 @@ function start() {
     document.querySelector('.menu-toggle')?.addEventListener('click', () => {
         document.querySelector('.nav')?.classList.toggle('active');
     });
+    if (page === 'admin-officials' && new URLSearchParams(window.location.search).has('preview')) {
+        const previewOfficials = [
+            { id: 'preview-captain', name: 'Juan Dela Cruz', position: 'Barangay Captain', group_name: 'Barangay Council', position_rank: 1, description: 'Barangay Council leadership' },
+            { id: 'preview-secretary', name: 'Maria Santos', position: 'Secretary', group_name: 'Barangay Council', position_rank: 2 },
+            { id: 'preview-treasurer', name: 'Pedro Ramos', position: 'Treasurer', group_name: 'Barangay Council', position_rank: 3 },
+            { id: 'preview-kagawad-1', name: 'Ana Reyes', position: 'Kagawad', group_name: 'Barangay Council', position_rank: 4 },
+            { id: 'preview-kagawad-2', name: 'Jose Garcia', position: 'Kagawad', group_name: 'Barangay Council', position_rank: 5 },
+            { id: 'preview-sk-chair', name: 'Carlo Mendoza', position: 'SK Chairperson', group_name: 'Sangguniang Kabataan', position_rank: 1 },
+            { id: 'preview-sk-secretary', name: 'Liza Bautista', position: 'Secretary', group_name: 'Sangguniang Kabataan', position_rank: 2 },
+            { id: 'preview-sk-treasurer', name: 'Mark Flores', position: 'Treasurer', group_name: 'Sangguniang Kabataan', position_rank: 3 },
+            { id: 'preview-sk-kagawad', name: 'Nina Cruz', position: 'SK Kagawad', group_name: 'Sangguniang Kabataan', position_rank: 4 }
+        ];
+        const message = document.getElementById('admin-message');
+        if (message) {
+            message.textContent = 'Layout preview only — sample names are shown. No Supabase data can be changed here.';
+            message.classList.add('official-preview-notice');
+        }
+        renderOfficialCards(previewOfficials, true);
+        return;
+    }
     if (!configured) {
         const target = document.getElementById('login-message')
             || document.getElementById('admin-message')

@@ -27,9 +27,17 @@
 .official-group-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
 .official-group-heading h2 { margin: 0; color: #f4fffd; }
 .official-group-heading span { color: #8de9dc; font-size: .75rem; }
+.official-group-tools { display: flex; align-items: center; gap: 10px; }
+.official-group-tools span { color: #8de9dc; font-size: .75rem; }
+.official-preview-notice { margin: 0 0 18px; padding: 12px 15px; border: 1px solid rgba(0,227,194,.24); border-radius: 10px; background: rgba(0,227,194,.07); color: #8de9dc; font-size: .85rem; }
+.official-group-add,
+.official-inline-add { display: inline-flex; align-items: center; justify-content: center; padding: 7px 12px; border: 0; border-radius: 9px; background: rgba(0,227,194,.12); color: #8de9dc; font: inherit; font-size: .76rem; font-weight: 800; cursor: pointer; }
+.official-group-add:hover,
+.official-inline-add:hover { background: rgba(0,227,194,.18); }
 .official-org-chart { display: flex; flex-direction: column; align-items: center; }
 .official-chart-level { position: relative; width: 100%; }
-.official-chart-level .official-tier-label { margin: 0 0 10px; text-align: center; }
+.official-tier-header { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px; }
+.official-chart-level .official-tier-label { margin: 0; text-align: center; }
 .official-chart-connector { width: 1px; height: 28px; background: rgba(0,227,194,.42); }
 .official-chart-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .official-chart-grid--top { display: flex; justify-content: center; }
@@ -37,6 +45,9 @@
 .official-chart-grid--middle { grid-template-columns: repeat(2, minmax(0, 260px)); justify-content: center; }
 .official-tier-label { color: #6f9d98; font-size: .68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .official-card { display: grid; grid-template-columns: 76px minmax(0,1fr); align-items: center; gap: 15px; min-width: 0; padding: 16px; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; background: rgba(255,255,255,.045); box-shadow: 0 12px 30px rgba(0,0,0,.1); }
+.official-card--empty { min-height: 110px; grid-template-columns: minmax(0,1fr) auto; border-style: dashed; border-color: rgba(142,236,224,.24); background: rgba(255,255,255,.025); }
+.official-card--empty .official-card-copy span { color: #8de9dc; }
+.official-card--empty .official-card-copy h3 { color: #9db8b8; font-size: .9rem; font-weight: 500; }
 .official-card img { width: 76px; height: 76px; object-fit: cover; border-radius: 13px; border: 1px solid rgba(0,227,194,.22); }
 .official-card-copy { min-width: 0; }
 .official-card-copy span { display: block; margin-bottom: 5px; color: #00e3c2; font-size: .68rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
@@ -55,9 +66,6 @@
 .admin-actions-copy strong { color: #f4fffd; }
 .official-control-bar span,
 .admin-actions-copy span { margin-top: 4px; color: #8caeaa; font-size: .8rem; }
-.official-group { margin-bottom: 34px; }
-.official-group-heading { margin-bottom: 14px; }
-.official-group-heading h2 { font-size: 1.35rem; }
 .official-card { display: grid; grid-template-columns: 76px minmax(0,1fr); align-items: center; gap: 15px; padding: 16px; border-radius: 16px; box-shadow: 0 12px 30px rgba(0,0,0,.1); }
 .official-card img { width: 76px; height: 76px; border-radius: 13px; }
 .official-card-copy span { color: #00e3c2; font-size: .68rem; }
@@ -65,6 +73,9 @@
 .official-card-copy p { font-size: .82rem; }
 .official-card-actions { grid-column: 1/-1; display: flex; gap: 7px; padding-top: 11px; border-top: 1px solid rgba(255,255,255,.08); }
 .official-card-actions button { padding: 7px 10px; border: 0; border-radius: 8px; background: rgba(0,227,194,.1); color: #8de9dc; font: inherit; font-size: .8rem; font-weight: 800; cursor: pointer; }
+.official-card-actions button:disabled,
+.official-card--empty button:disabled,
+.official-chart-level > .official-tier-header button:disabled { opacity: .5; cursor: not-allowed; }
 .official-card-actions button:last-child { background: rgba(255,133,133,.1); color: #ffabab; }
 .official-card-actions button:last-child:hover,
 .announcement-actions .btn-delete:hover,
@@ -188,6 +199,7 @@
 @media (max-width: 560px) {
     .official-control-bar { align-items: flex-start; flex-direction: column; }
     .official-chart-grid,.official-chart-grid--middle,.official-modal-form { grid-template-columns: 1fr; }
+    .official-card--empty { grid-template-columns: 1fr; }
     .official-modal-form label.full,.official-modal-actions { grid-column: auto; }
     .official-modal-actions { align-items: stretch; flex-direction: column; }
 }
