@@ -46,11 +46,11 @@
 .official-tier-label { color: #6f9d98; font-size: .68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .official-card { display: grid; grid-template-columns: 76px minmax(0,1fr); align-items: center; gap: 15px; min-width: 0; padding: 16px; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; background: rgba(255,255,255,.045); box-shadow: 0 12px 30px rgba(0,0,0,.1); }
 .official-card--occupied { border-style: solid; border-color: rgba(0,227,194,.22); background: rgba(10,28,35,.76); }
-.official-card.official-card--empty { min-height: 104px; grid-template-columns: 54px minmax(0,1fr) auto; border: 1px dashed rgba(142,236,224,.38); background: rgba(255,255,255,.025); box-shadow: none; }
+.official-card.official-card--empty { min-height: 104px; grid-template-columns: 54px minmax(0,1fr); border: 1px dashed rgba(142,236,224,.38); background: rgba(255,255,255,.025); box-shadow: none; }
 .official-card img.official-empty-avatar { width: 54px; height: 54px; object-fit: cover; border: 1px solid rgba(142,236,224,.22); border-radius: 50%; background: #f4fffd; }
 .official-card--empty .official-card-copy span { color: #8de9dc; }
 .official-card--empty .official-card-copy h3 { margin-top: 5px; color: #9db8b8; font-size: .9rem; font-weight: 500; }
-.official-add-button { grid-column: auto; justify-self: end; padding: 8px 11px; border: 1px solid rgba(0,227,194,.3); border-radius: 8px; background: rgba(0,227,194,.1); color: #8de9dc; font: inherit; font-size: .74rem; font-weight: 800; white-space: nowrap; cursor: pointer; }
+.official-add-button { grid-column: 1 / -1; justify-self: stretch; width: 100%; padding: 8px 11px; border: 1px solid rgba(0,227,194,.3); border-radius: 8px; background: rgba(0,227,194,.1); color: #8de9dc; font: inherit; font-size: .74rem; font-weight: 800; white-space: nowrap; cursor: pointer; }
 .official-add-button:hover { background: rgba(0,227,194,.18); }
 .official-card img { width: 76px; height: 76px; object-fit: cover; border-radius: 13px; border: 1px solid rgba(0,227,194,.22); }
 .official-card-copy { min-width: 0; }
@@ -71,7 +71,7 @@
 .official-control-bar span,
 .admin-actions-copy span { margin-top: 4px; color: #8caeaa; font-size: .8rem; }
 .official-card { display: grid; grid-template-columns: 76px minmax(0,1fr); align-items: center; gap: 15px; padding: 16px; border-radius: 16px; box-shadow: 0 12px 30px rgba(0,0,0,.1); }
-.official-card.official-card--empty { min-height: 104px; grid-template-columns: 54px minmax(0,1fr) auto; border: 1px dashed rgba(142,236,224,.38); background: rgba(255,255,255,.025); box-shadow: none; }
+.official-card.official-card--empty { min-height: 104px; grid-template-columns: 54px minmax(0,1fr); border: 1px dashed rgba(142,236,224,.38); background: rgba(255,255,255,.025); box-shadow: none; }
 .official-card.official-card--occupied { border: 1px solid rgba(0,227,194,.22); background: rgba(10,28,35,.76); }
 .official-card img { width: 76px; height: 76px; border-radius: 13px; }
 .official-card-copy span { color: #00e3c2; font-size: .68rem; }
@@ -210,7 +210,7 @@
 @media (max-width: 560px) {
     .official-control-bar { align-items: flex-start; flex-direction: column; }
     .official-chart-grid,.official-chart-grid--middle,.official-modal-form { grid-template-columns: 1fr; }
-    .official-card.official-card--empty { grid-template-columns: 44px minmax(0,1fr) auto; gap: 10px; padding: 12px; }
+    .official-card.official-card--empty { grid-template-columns: 44px minmax(0,1fr); gap: 10px; padding: 12px; }
     .official-modal-form label.full,.official-modal-actions { grid-column: auto; }
     .official-modal-actions { align-items: stretch; flex-direction: column; }
 }
