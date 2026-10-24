@@ -275,7 +275,7 @@ function renderOfficialCards(officials) {
     const target = document.getElementById('official-groups');
     if (!target) return;
     const officialCard = (official, group, position, rank) => official ? `
-        <article class="official-card">
+        <article class="official-card official-card--occupied">
             <img src="${escapeHtml(imageUrl(official.image, 'officials'))}" alt="${escapeHtml(officialPositionLabel(official))}">
             <div class="official-card-copy">
                 <span>${escapeHtml(officialPositionLabel(official))}</span>
@@ -284,15 +284,24 @@ function renderOfficialCards(officials) {
             </div>
             <div class="official-card-actions">
                 <button type="button" data-edit="officials" data-record="${escapeHtml(JSON.stringify(official))}">Edit</button>
-                <button type="button" data-delete="officials" data-id="${official.id}">Delete</button>
+                <button type="button" class="official-remove-button" data-delete="officials" data-id="${official.id}">Remove</button>
             </div>
         </article>` : `
         <article class="official-card official-card--empty">
-            <div class="official-card-copy"><span>${escapeHtml(position)}</span><h3>Position available</h3></div>
-            <button type="button" class="official-group-add"
+            <div class="official-empty-avatar" aria-hidden="true">
+                <svg viewBox="0 0 48 48" focusable="false">
+                    <circle cx="24" cy="16" r="9"></circle>
+                    <path d="M7 42c1.8-9 8.1-14 17-14s15.2 5 17 14"></path>
+                </svg>
+            </div>
+            <div class="official-card-copy">
+                <span>${escapeHtml(position)}</span>
+                <h3>Vacant</h3>
+            </div>
+            <button type="button" class="official-add-button"
                 data-add-official="${escapeHtml(group)}"
                 data-position="${escapeHtml(position)}"
-                data-rank="${rank}">Add official</button>
+                data-rank="${rank}">+ Add Official</button>
         </article>`;
     target.innerHTML = [...groups].map(([group, records]) => {
         records.sort((left, right) => Number(left.position_rank || 99) - Number(right.position_rank || 99)
@@ -301,18 +310,23 @@ function renderOfficialCards(officials) {
         const captain = records.find(record => Number(record.position_rank) === 1);
         const secretary = records.find(record => Number(record.position_rank) === 2);
         const treasurer = records.find(record => Number(record.position_rank) === 3);
+        const assignedCouncilors = new Set();
         const councilorSlots = Array.from({ length: 7 }, (_, index) => {
             const rank = index + 4;
             const official = records.find(record => Number(record.position_rank) === rank);
+            if (official) assignedCouncilors.add(official.id);
             const role = isYouthCouncil ? `SK Kagawad ${index + 1}` : `Kagawad ${index + 1} · ${barangayKagawadRoles[index]}`;
             const position = official && !/^(?:sk\s+)?kagawad(?:\s+\d+)?$/i.test(String(official.position || '').trim())
                 ? official.position
                 : role;
             return { official, rank, position };
         });
-        const extraCouncilors = records.filter(record =>
-            Number(record.position_rank) > 10 || Number(record.position_rank) < 1 && Number(record.position_rank) >= 4);
+        const extraCouncilors = records.filter(record => {
+            const rank = Number(record.position_rank);
+            return rank > 10 || (rank >= 4 && rank <= 10 && !assignedCouncilors.has(record.id));
+        });
         const chairLabel = isYouthCouncil ? 'SK Chairperson' : 'Barangay Captain';
+        const councilorHeading = isYouthCouncil ? 'Seven SK Kagawad positions' : 'Seven Kagawad positions';
         const chartTiers = `
             <section class="official-chart-level">
                 <h3 class="official-tier-label">${chairLabel}</h3>
@@ -331,7 +345,7 @@ function renderOfficialCards(officials) {
             <div class="official-chart-connector" aria-hidden="true"></div>
             <section class="official-chart-level">
                 <div class="official-tier-header">
-                    <h3 class="official-tier-label">Seven Kagawad / Councilor positions</h3>
+                    <h3 class="official-tier-label">${councilorHeading}</h3>
                 </div>
                 <div class="official-chart-grid">
                     ${councilorSlots.map(({ official, rank, position }) =>
@@ -349,8 +363,6 @@ function renderOfficialCards(officials) {
             <div class="official-org-chart">${chartTiers}</div>
         </section>`;
     }).join('');
-    const count = document.getElementById('official-count');
-    if (count) count.textContent = officials.length;
 }
 
 function renderFundAdmin() {
@@ -618,7 +630,6 @@ function setupOfficialPreview(officials) {
         if (status) status.textContent = message;
     };
 
-    document.getElementById('open-official-modal')?.addEventListener('click', () => openOfficialModal());
     ['close-official-modal', 'cancel-official-modal'].forEach(id => {
         document.getElementById(id)?.addEventListener('click', () => {
             modal.hidden = true;
@@ -697,7 +708,9 @@ async function handleAdminAction(event) {
         return;
     }
     const deleteButton = event.target.closest('[data-delete]');
-    if (!deleteButton || !window.confirm('Are you sure you want to delete this record?')) return;
+    if (!deleteButton || !window.confirm(deleteButton.dataset.delete === 'officials'
+        ? 'Remove this official and clear the position slot?'
+        : 'Are you sure you want to delete this record?')) return;
     const message = document.getElementById('admin-message');
     try {
         const { error } = await supabase.from(deleteButton.dataset.delete)
@@ -728,7 +741,6 @@ function setupAdminPage() {
     document.getElementById('logout-button')?.addEventListener('click', signOut);
     document.addEventListener('submit', handleAdminSubmit);
     document.addEventListener('click', handleAdminAction);
-    document.getElementById('open-official-modal')?.addEventListener('click', () => openOfficialModal());
     ['close-official-modal', 'cancel-official-modal'].forEach(id => {
         document.getElementById(id)?.addEventListener('click', () => {
             document.getElementById('official-modal').hidden = true;
