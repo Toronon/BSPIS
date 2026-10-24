@@ -232,6 +232,21 @@ body {
     letter-spacing:.04em;
 }
 
+.fund-category-badge{
+    display:inline-flex;
+    align-items:center;
+    margin:0 0 8px;
+    padding:5px 9px;
+    border:1px solid rgba(0,255,213,.18);
+    border-radius:999px;
+    background:rgba(0,255,213,.08);
+    color:#8de9dc;
+    font-size:.7rem;
+    font-weight:800;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+}
+
 .fund-post p{
     margin:10px 0 0;
     color:#dbeaea;
