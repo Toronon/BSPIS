@@ -41,6 +41,7 @@ function renderOfficials(officials, container) {
     }, new Map());
     const homePage = container.id === 'home-officials';
     const groupMarkup = ([group, records]) => {
+        const isYouthCouncil = /sangguniang kabataan|\bsk\b/i.test(group || '');
         const tiers = [[], [], []];
         records.forEach(official => {
             const rank = Number(official.position_rank) || 99;
@@ -61,7 +62,7 @@ function renderOfficials(officials, container) {
             <div class="${homePage ? 'public-directory-group-heading' : 'public-official-group-heading'}">
                 <h2>${escapeHtml(group)}</h2><span>${records.length} profiles</span>
             </div>
-            ${tierMarkup(tiers[0], 'Chairperson', 'top', true)}
+            ${tierMarkup(tiers[0], isYouthCouncil ? 'SK Chairperson' : 'Barangay Captain', 'top', true)}
             ${tierMarkup(tiers[1], 'Secretary & Treasurer', 'middle', false)}
             ${tierMarkup(tiers[2], 'Kagawad / Councilors', 'bottom', false)}
         </section>`;
@@ -252,37 +253,45 @@ function renderOfficialCards(officials) {
     if (!target) return;
     const tierHtml = (records, label, modifier) => {
         if (!records.length) return '';
-        return `<p class="official-tier-label">${label}</p>
+        return `<section class="official-chart-level official-chart-level--${modifier || 'council'}">
+            <h3 class="official-tier-label">${label}</h3>
             <div class="official-chart-grid${modifier ? ` official-chart-grid--${modifier}` : ''}">
                 ${records.map(official => `<article class="official-card">
                     <img src="${escapeHtml(imageUrl(official.image, 'officials'))}" alt="${escapeHtml(official.position)}">
                     <div class="official-card-copy">
                         <span>${escapeHtml(official.position)}</span>
                         <h3>${escapeHtml(official.name)}</h3>
-                        ${official.description && label === 'Chairperson' ? `<p>${escapeHtml(official.description)}</p>` : ''}
+                        ${official.description && modifier === 'top' ? `<p>${escapeHtml(official.description)}</p>` : ''}
                     </div>
                     <div class="official-card-actions">
                         <button type="button" data-edit="officials" data-record="${escapeHtml(JSON.stringify(official))}">Edit</button>
                         <button type="button" data-delete="officials" data-id="${official.id}">Delete</button>
                     </div>
                 </article>`).join('')}
-            </div>`;
+            </div>
+        </section>`;
     };
     target.innerHTML = [...groups].map(([group, records]) => {
         records.sort((left, right) => Number(left.position_rank || 99) - Number(right.position_rank || 99)
             || String(left.name).localeCompare(String(right.name)));
-        const tiers = [[], [], [], []];
+        const isYouthCouncil = /sangguniang kabataan|\bsk\b/i.test(group || '');
+        const tiers = [[], [], []];
         records.forEach(record => {
             const rank = Number(record.position_rank) || 99;
             tiers[rank <= 1 ? 0 : rank <= 3 ? 1 : 2].push(record);
         });
+        const chartTiers = [
+            tierHtml(tiers[0], isYouthCouncil ? 'SK Chairperson' : 'Barangay Captain', 'top'),
+            tierHtml(tiers[1], 'Secretary & Treasurer', 'middle'),
+            tierHtml(tiers[2], 'Kagawad / Councilors', '')
+        ].filter(Boolean);
         return `<section class="official-group">
             <div class="official-group-heading">
                 <h2>${escapeHtml(group || 'Other')}</h2><span>${records.length} profiles</span>
             </div>
-            ${tierHtml(tiers[0], 'Chairperson', 'top')}
-            ${tierHtml(tiers[1], 'Secretary & Treasurer', 'middle')}
-            ${tierHtml(tiers[2], 'Kagawad / Councilors', '')}
+            <div class="official-org-chart">
+                ${chartTiers.join('<div class="official-chart-connector" aria-hidden="true"></div>')}
+            </div>
         </section>`;
     }).join('') || '<p>No officials have been added yet.</p>';
     const count = document.getElementById('official-count');
