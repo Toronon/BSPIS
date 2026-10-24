@@ -607,7 +607,7 @@ async function handleLogin(event) {
         password: form.elements.password.value
     });
     if (error) return showError(message, error);
-    window.location.assign('admin-officials.html');
+    window.location.assign('admin-home.html');
 }
 
 async function handleAdminSubmit(event) {
@@ -876,6 +876,7 @@ function start() {
     }
     if (page === 'officials') loadOfficials();
     if (page === 'home') loadOfficials();
+    if (page === 'admin-home') loadOfficials();
     if (page === 'announcements') loadAnnouncements();
     if (page === 'funds') loadFunds();
 }
