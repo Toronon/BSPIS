@@ -23,6 +23,7 @@
     <main class="funds-wrapper">
         <aside class="funds-sidebar">
             <div class="budget-card"><h2>Current Budget</h2><span id="admin-current-budget">₱0.00</span></div>
+            <form class="year-filter" id="admin-fund-category-form"><label for="admin-fund-category">Fund Category</label><select id="admin-fund-category"><option value="Barangay">Barangay Funds</option><option value="SK">SK Funds</option></select></form>
             <form class="year-filter" id="admin-fund-year-form"><label for="admin-fund-year">Fiscal Year</label><select id="admin-fund-year"><option value="">Select Year</option></select></form>
             <div class="sidebar-actions"><button id="open-annual-btn" class="sidebar-btn" type="button">Add Annual Budget</button></div>
             <section class="section-panel">
@@ -50,12 +51,12 @@
     <div id="annual-popup" class="popup" aria-hidden="true"><div class="popup-content">
         <button class="popup-close" type="button" data-close-popup="annual-popup" aria-label="Close">&times;</button>
         <h3>Add Annual Budget</h3>
-        <form id="annual-form"><input type="hidden" name="id"><input type="number" name="year" placeholder="Year" required><input type="number" step="0.01" name="amount" placeholder="Amount" required><textarea name="description" placeholder="Budget Plan"></textarea><label>Image<input type="file" name="image" accept="image/*"></label><button type="submit">Post</button></form>
+        <form id="annual-form"><input type="hidden" name="id"><select name="category" aria-label="Budget category" required><option value="Barangay">Barangay Funds</option><option value="SK">SK Funds</option></select><input type="number" name="year" placeholder="Year" required><input type="number" step="0.01" name="amount" placeholder="Amount" required><textarea name="description" placeholder="Budget Plan"></textarea><label>Image<input type="file" name="image" accept="image/*"></label><button type="submit">Post</button></form>
     </div></div>
     <div id="expense-popup" class="popup" aria-hidden="true"><div class="popup-content">
         <button class="popup-close" type="button" data-close-popup="expense-popup" aria-label="Close">&times;</button>
         <h3>Add Expense</h3>
-        <form id="fund-form"><input type="hidden" name="id"><input type="hidden" name="year"><input type="number" step="0.01" name="amount" placeholder="Amount" required><input type="text" name="fund_name" placeholder="Title" required><textarea name="description" placeholder="Description"></textarea><select name="quarter" required><option value="" disabled selected>Select Quarter</option><option value="Q1">1st Quarter</option><option value="Q2">2nd Quarter</option><option value="Q3">3rd Quarter</option><option value="Q4">4th Quarter</option></select><label>Image<input type="file" name="image" accept="image/*"></label><button type="submit">Post</button></form>
+        <form id="fund-form"><input type="hidden" name="id"><input type="hidden" name="year"><select name="category" aria-label="Expense category" required><option value="Barangay">Barangay Funds</option><option value="SK">SK Funds</option></select><input type="number" step="0.01" name="amount" placeholder="Amount" required><input type="text" name="fund_name" placeholder="Title" required><textarea name="description" placeholder="Description"></textarea><select name="quarter" required><option value="" disabled selected>Select Quarter</option><option value="Q1">1st Quarter</option><option value="Q2">2nd Quarter</option><option value="Q3">3rd Quarter</option><option value="Q4">4th Quarter</option></select><label>Image<input type="file" name="image" accept="image/*"></label><button type="submit">Post</button></form>
     </div></div>
     <footer class="site-footer"><p>&copy; <span data-year></span> BSPI. All rights reserved.</p></footer>
     <script src="scripts/config.js"></script><script type="module" src="scripts/site.js"></script>
