@@ -32,24 +32,15 @@ async function getPublicOfficials() {
     return data;
 }
 
-const barangayKagawadRoles = [
-    'Peace and Order',
-    'Infrastructure and Public Works',
-    'Health and Sanitation',
-    'Education and Youth',
-    'Agriculture and Environment',
-    'Budget and Finance',
-    "Social Services and Women's Affairs"
-];
-
 function officialPositionLabel(official) {
     const rank = Number(official.position_rank);
     const position = String(official.position || '').trim();
-    const genericKagawad = /^(?:sk\s+)?kagawad(?:\s+\d+)?$/i.test(position);
-    if (!genericKagawad || rank < 4 || rank > 10) return position;
-    const isYouthCouncil = /sangguniang kabataan|\bsk\b/i.test(official.group_name || '');
-    if (isYouthCouncil) return `SK Kagawad ${rank - 3}`;
-    return `Kagawad ${rank - 3} · ${barangayKagawadRoles[rank - 4]}`;
+    if (rank >= 4 && rank <= 10) {
+        const isYouthCouncil = /sangguniang kabataan|\bsk\b/i.test(official.group_name || '')
+            || /^sk\s+kagawad/i.test(position);
+        return `${isYouthCouncil ? 'SK ' : ''}Kagawad ${rank - 3}`;
+    }
+    return position;
 }
 
 function renderOfficials(officials, container) {
@@ -279,11 +270,16 @@ function renderOfficialCards(officials) {
         records.push(official);
         groups.set(official.group_name, records);
     });
-    ['Barangay Council', 'Sangguniang Kabataan'].forEach(group => {
+    const fixedGroups = ['Barangay Council', 'Sangguniang Kabataan'];
+    fixedGroups.forEach(group => {
         if (!groups.has(group)) groups.set(group, []);
     });
     const target = document.getElementById('official-groups');
     if (!target) return;
+    const orderedGroups = [
+        ...fixedGroups,
+        ...[...groups.keys()].filter(group => !fixedGroups.includes(group)).sort((left, right) => left.localeCompare(right))
+    ];
     const officialCard = (official, group, position, rank) => official ? `
         <article class="official-card official-card--occupied">
             <img src="${escapeHtml(imageUrl(official.image, 'officials'))}" alt="${escapeHtml(officialPositionLabel(official))}">
@@ -308,7 +304,8 @@ function renderOfficialCards(officials) {
                 data-position="${escapeHtml(position)}"
                 data-rank="${rank}">+ Add Official</button>
         </article>`;
-    target.innerHTML = [...groups].map(([group, records]) => {
+    target.innerHTML = orderedGroups.map(group => {
+        const records = groups.get(group);
         records.sort((left, right) => Number(left.position_rank || 99) - Number(right.position_rank || 99)
             || String(left.name).localeCompare(String(right.name)));
         const isYouthCouncil = /sangguniang kabataan|\bsk\b/i.test(group || '');
@@ -320,10 +317,8 @@ function renderOfficialCards(officials) {
             const rank = index + 4;
             const official = records.find(record => Number(record.position_rank) === rank);
             if (official) assignedCouncilors.add(official.id);
-            const role = isYouthCouncil ? `SK Kagawad ${index + 1}` : `Kagawad ${index + 1} · ${barangayKagawadRoles[index]}`;
-            const position = official && !/^(?:sk\s+)?kagawad(?:\s+\d+)?$/i.test(String(official.position || '').trim())
-                ? official.position
-                : role;
+            const role = `${isYouthCouncil ? 'SK ' : ''}Kagawad ${index + 1}`;
+            const position = role;
             return { official, rank, position };
         });
         const extraCouncilors = records.filter(record => {
