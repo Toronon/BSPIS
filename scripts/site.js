@@ -32,6 +32,26 @@ async function getPublicOfficials() {
     return data;
 }
 
+const barangayKagawadRoles = [
+    'Peace and Order',
+    'Infrastructure and Public Works',
+    'Health and Sanitation',
+    'Education and Youth',
+    'Agriculture and Environment',
+    'Budget and Finance',
+    "Social Services and Women's Affairs"
+];
+
+function officialPositionLabel(official) {
+    const rank = Number(official.position_rank);
+    const position = String(official.position || '').trim();
+    const genericKagawad = /^(?:sk\s+)?kagawad(?:\s+\d+)?$/i.test(position);
+    if (!genericKagawad || rank < 4 || rank > 10) return position;
+    const isYouthCouncil = /sangguniang kabataan|\bsk\b/i.test(official.group_name || '');
+    if (isYouthCouncil) return `SK Kagawad ${rank - 3}`;
+    return `Kagawad ${rank - 3} · ${barangayKagawadRoles[rank - 4]}`;
+}
+
 function renderOfficials(officials, container) {
     const groups = officials.reduce((map, official) => {
         const records = map.get(official.group_name) || [];
@@ -52,8 +72,8 @@ function renderOfficials(officials, container) {
             <div class="${homePage ? 'public-directory-tier' : 'public-tier'} ${modifier ? `${homePage ? 'public-directory-tier' : 'public-tier'}--${modifier}` : ''}">
                 ${items.map(official => `
                     <article class="${homePage ? 'public-directory-card' : 'public-official-card'}">
-                        <img src="${escapeHtml(imageUrl(official.image, 'officials'))}" alt="${escapeHtml(official.position)}">
-                        <div><small>${escapeHtml(official.position)}</small><h3>${escapeHtml(official.name)}</h3>
+                        <img src="${escapeHtml(imageUrl(official.image, 'officials'))}" alt="${escapeHtml(officialPositionLabel(official))}">
+                        <div><small>${escapeHtml(officialPositionLabel(official))}</small><h3>${escapeHtml(official.name)}</h3>
                             ${showDescription && official.description ? `<p>${escapeHtml(official.description)}</p>` : ''}
                         </div>
                     </article>`).join('')}
@@ -256,9 +276,9 @@ function renderOfficialCards(officials, preview = false) {
     if (!target) return;
     const officialCard = (official, group, position, rank) => official ? `
         <article class="official-card">
-            <img src="${escapeHtml(imageUrl(official.image, 'officials'))}" alt="${escapeHtml(official.position)}">
+            <img src="${escapeHtml(imageUrl(official.image, 'officials'))}" alt="${escapeHtml(officialPositionLabel(official))}">
             <div class="official-card-copy">
-                <span>${escapeHtml(official.position)}</span>
+                <span>${escapeHtml(officialPositionLabel(official))}</span>
                 <h3>${escapeHtml(official.name)}</h3>
                 ${official.description ? `<p>${escapeHtml(official.description)}</p>` : ''}
             </div>
@@ -281,7 +301,17 @@ function renderOfficialCards(officials, preview = false) {
         const captain = records.find(record => Number(record.position_rank) === 1);
         const secretary = records.find(record => Number(record.position_rank) === 2);
         const treasurer = records.find(record => Number(record.position_rank) === 3);
-        const councilors = records.filter(record => Number(record.position_rank) >= 4);
+        const councilorSlots = Array.from({ length: 7 }, (_, index) => {
+            const rank = index + 4;
+            const official = records.find(record => Number(record.position_rank) === rank);
+            const role = isYouthCouncil ? `SK Kagawad ${index + 1}` : `Kagawad ${index + 1} · ${barangayKagawadRoles[index]}`;
+            const position = official && !/^(?:sk\s+)?kagawad(?:\s+\d+)?$/i.test(String(official.position || '').trim())
+                ? official.position
+                : role;
+            return { official, rank, position };
+        });
+        const extraCouncilors = records.filter(record =>
+            Number(record.position_rank) > 10 || Number(record.position_rank) < 1 && Number(record.position_rank) >= 4);
         const chairLabel = isYouthCouncil ? 'SK Chairperson' : 'Barangay Captain';
         const chartTiers = `
             <section class="official-chart-level">
@@ -301,16 +331,15 @@ function renderOfficialCards(officials, preview = false) {
             <div class="official-chart-connector" aria-hidden="true"></div>
             <section class="official-chart-level">
                 <div class="official-tier-header">
-                    <h3 class="official-tier-label">Kagawad / Councilors</h3>
-                    <button type="button" class="official-group-add"
-                        data-add-official="${escapeHtml(group)}"
-                        data-position="Kagawad" data-rank="4"${preview ? ' disabled' : ''}>Add Councilor</button>
+                    <h3 class="official-tier-label">Seven Kagawad / Councilor positions</h3>
                 </div>
                 <div class="official-chart-grid">
-                    ${councilors.length
-                        ? councilors.map(official => officialCard(official, group, 'Kagawad', 4)).join('')
-                        : officialCard(null, group, 'Kagawad', 4)}
+                    ${councilorSlots.map(({ official, rank, position }) =>
+                        officialCard(official, group, position, rank)).join('')}
                 </div>
+                ${extraCouncilors.length ? `<div class="official-chart-grid official-chart-grid--extras">
+                    ${extraCouncilors.map(official => officialCard(official, group, officialPositionLabel(official), Number(official.position_rank))).join('')}
+                </div>` : ''}
             </section>`;
         return `<section class="official-group">
             <div class="official-group-heading">
@@ -694,8 +723,13 @@ function start() {
             { id: 'preview-captain', name: 'Juan Dela Cruz', position: 'Barangay Captain', group_name: 'Barangay Council', position_rank: 1, description: 'Barangay Council leadership' },
             { id: 'preview-secretary', name: 'Maria Santos', position: 'Secretary', group_name: 'Barangay Council', position_rank: 2 },
             { id: 'preview-treasurer', name: 'Pedro Ramos', position: 'Treasurer', group_name: 'Barangay Council', position_rank: 3 },
-            { id: 'preview-kagawad-1', name: 'Ana Reyes', position: 'Kagawad', group_name: 'Barangay Council', position_rank: 4 },
-            { id: 'preview-kagawad-2', name: 'Jose Garcia', position: 'Kagawad', group_name: 'Barangay Council', position_rank: 5 },
+            { id: 'preview-kagawad-1', name: 'Ana Reyes', position: 'Kagawad', group_name: 'Barangay Council', position_rank: 4, description: 'Temporary demo profile — Peace and Order' },
+            { id: 'preview-kagawad-2', name: 'Jose Garcia', position: 'Kagawad', group_name: 'Barangay Council', position_rank: 5, description: 'Temporary demo profile — Infrastructure and Public Works' },
+            { id: 'preview-kagawad-3', name: 'Rosa Cruz', position: 'Kagawad', group_name: 'Barangay Council', position_rank: 6, description: 'Temporary demo profile — Health and Sanitation' },
+            { id: 'preview-kagawad-4', name: 'Mario Bautista', position: 'Kagawad', group_name: 'Barangay Council', position_rank: 7, description: 'Temporary demo profile — Education and Youth' },
+            { id: 'preview-kagawad-5', name: 'Elena Flores', position: 'Kagawad', group_name: 'Barangay Council', position_rank: 8, description: 'Temporary demo profile — Agriculture and Environment' },
+            { id: 'preview-kagawad-6', name: 'Ramon Torres', position: 'Kagawad', group_name: 'Barangay Council', position_rank: 9, description: 'Temporary demo profile — Budget and Finance' },
+            { id: 'preview-kagawad-7', name: 'Grace Mendoza', position: 'Kagawad', group_name: 'Barangay Council', position_rank: 10, description: "Temporary demo profile — Social Services and Women's Affairs" },
             { id: 'preview-sk-chair', name: 'Carlo Mendoza', position: 'SK Chairperson', group_name: 'Sangguniang Kabataan', position_rank: 1 },
             { id: 'preview-sk-secretary', name: 'Liza Bautista', position: 'Secretary', group_name: 'Sangguniang Kabataan', position_rank: 2 },
             { id: 'preview-sk-treasurer', name: 'Mark Flores', position: 'Treasurer', group_name: 'Sangguniang Kabataan', position_rank: 3 },
