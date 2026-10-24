@@ -23,9 +23,7 @@
     <main class="funds-wrapper">
         <aside class="funds-sidebar">
             <div class="budget-card"><h2>Current Budget</h2><span id="admin-current-budget">₱0.00</span></div>
-            <form class="year-filter" id="admin-fund-category-form"><label for="admin-fund-category">Fund Category</label><select id="admin-fund-category"><option value="Barangay">Barangay Funds</option><option value="SK">SK Funds</option></select></form>
             <form class="year-filter" id="admin-fund-year-form"><label for="admin-fund-year">Fiscal Year</label><select id="admin-fund-year"><option value="">Select Year</option></select></form>
-            <div class="sidebar-actions"><button id="open-annual-btn" class="sidebar-btn" type="button">Add Annual Budget</button></div>
             <section class="section-panel">
                 <div class="section-title-row"><h2>Annual Budgets</h2><span class="status-pill">Budget</span></div>
                 <div id="annual-list-admin"><div class="empty-state">Loading annual budgets…</div></div>
@@ -34,8 +32,13 @@
         <section class="funds-feed">
             <div class="funds-header"><div class="page-heading"><h1>Funds Management</h1><p>Track annual budgets, operating expenses, and the barangay cash flow.</p></div></div>
             <div class="admin-actions">
-                <div class="admin-actions-copy"><strong>Admin controls</strong><span>Manage expense records and review the funds activity.</span></div>
-                <div class="admin-actions-buttons"><button id="open-expense-btn" class="admin-action-btn primary" type="button">Add New Expense</button><button id="generate-report-btn" class="admin-action-btn secondary" type="button">Generate Report</button></div>
+                <div class="admin-actions-copy"><strong>Manage Funds</strong><span>Select a category to view its balance and preselect it when adding a budget or expense.</span></div>
+                <div class="admin-actions-buttons">
+                    <label class="admin-category-control" for="admin-fund-category"><span>Fund Category</span><select id="admin-fund-category"><option value="Barangay">Barangay Funds</option><option value="SK">SK Funds</option></select></label>
+                    <button id="open-annual-btn" class="admin-action-btn secondary admin-action-btn--budget" type="button">Add Annual Budget</button>
+                    <button id="open-expense-btn" class="admin-action-btn primary" type="button">Add New Expense</button>
+                    <button id="generate-report-btn" class="admin-action-btn secondary" type="button">Generate Report</button>
+                </div>
             </div>
             <div class="summary-grid">
                 <div class="summary-card"><span class="label">Current Budget</span><span class="value positive" id="admin-budget-summary">₱0.00</span></div>
