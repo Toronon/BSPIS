@@ -240,7 +240,13 @@ async function loadFunds() {
     }
 }
 
-async function requireAdmin() {
+async function requireProfileRole(role) {
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) throw sessionError;
+    if (!session) {
+        window.location.replace('login.html');
+        return null;
+    }
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError) throw authError;
     if (!user) {
@@ -250,12 +256,21 @@ async function requireAdmin() {
     const { data: profile, error } = await supabase.from('admin_profiles')
         .select('role').eq('id', user.id).maybeSingle();
     if (error) throw error;
-    if (!profile) {
-        await supabase.auth.signOut();
+    if (profile?.role !== role) {
+        const { error: signOutError } = await supabase.auth.signOut();
+        if (signOutError) throw signOutError;
         window.location.replace('login.html?error=unauthorized');
         return null;
     }
     return user;
+}
+
+async function requireAdmin() {
+    return requireProfileRole('admin');
+}
+
+async function requireLgu() {
+    return requireProfileRole('lgu');
 }
 
 function formValues(form) {
@@ -641,12 +656,110 @@ async function handleLogin(event) {
     event.preventDefault();
     const message = document.getElementById('login-message');
     const form = event.currentTarget;
-    const { error } = await supabase.auth.signInWithPassword({
+    const role = form.elements.namedItem('account_type').value;
+    const { data, error } = await supabase.auth.signInWithPassword({
         email: form.elements.email.value.trim(),
         password: form.elements.password.value
     });
     if (error) return showError(message, error);
-    window.location.assign('admin-home.html');
+    const { data: profile, error: profileError } = await supabase.from('admin_profiles')
+        .select('role').eq('id', data.user.id).maybeSingle();
+    if (profileError) {
+        const { error: signOutError } = await supabase.auth.signOut();
+        if (signOutError) throw signOutError;
+        return showError(message, profileError);
+    }
+    if (profile?.role !== role) {
+        const { error: signOutError } = await supabase.auth.signOut();
+        if (signOutError) throw signOutError;
+        return showError(message, { message: 'This account is not authorized for the selected account type.' });
+    }
+    window.location.assign(role === 'lgu' ? 'lgu-create-admin.html' : 'admin-home.html');
+}
+
+async function loadLguAdminPage() {
+    const message = document.getElementById('lgu-message');
+    try {
+        const user = await requireLgu();
+        if (user) {
+            document.getElementById('lgu-email').textContent = user.email;
+            document.getElementById('create-admin-form').hidden = false;
+        }
+    } catch (error) {
+        showError(message, error);
+    }
+}
+
+async function handleCreateAdmin(event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const message = document.getElementById('lgu-message');
+    const button = form.querySelector('button[type="submit"]');
+    const originalText = button.textContent;
+    button.disabled = true;
+    button.textContent = 'Sending invitation…';
+    message.hidden = true;
+    try {
+        const { error } = await supabase.functions.invoke('create-admin', {
+            body: { email: form.elements.email.value.trim() }
+        });
+        if (error) throw error;
+        form.reset();
+        message.textContent = 'Admin invitation sent. The admin must use the email link to set a password.';
+        message.hidden = false;
+        message.classList.remove('login-error');
+        message.classList.add('login-success');
+    } catch (error) {
+        message.classList.remove('login-success');
+        message.classList.add('login-error');
+        showError(message, error);
+    } finally {
+        button.disabled = false;
+        button.textContent = originalText;
+    }
+}
+
+async function loadPasswordSetup() {
+    const message = document.getElementById('password-message');
+    try {
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) throw sessionError;
+        if (!session) {
+            showError(message, { message: 'This invitation link is invalid or expired. Ask the LGU to send a new invitation.' });
+            return;
+        }
+        const { data: { user }, error } = await supabase.auth.getUser();
+        if (error) throw error;
+        if (!user) throw new Error('The invitation does not belong to an active user.');
+        document.getElementById('set-password-form').hidden = false;
+    } catch (error) {
+        showError(message, error);
+    }
+}
+
+async function handleSetPassword(event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const message = document.getElementById('password-message');
+    const password = form.elements.password.value;
+    if (password !== form.elements.confirm_password.value) {
+        return showError(message, { message: 'The passwords do not match.' });
+    }
+    const button = form.querySelector('button[type="submit"]');
+    button.disabled = true;
+    try {
+        const { error } = await supabase.auth.updateUser({ password });
+        if (error) throw error;
+        message.classList.remove('login-error');
+        message.classList.add('login-success');
+        message.textContent = 'Password saved. Opening the admin workspace…';
+        message.hidden = false;
+        window.location.assign('admin-home.html');
+    } catch (error) {
+        showError(message, error);
+    } finally {
+        button.disabled = false;
+    }
 }
 
 async function handleAdminSubmit(event) {
@@ -780,7 +893,12 @@ async function handleAdminAction(event) {
 
 async function signOut() {
     const { error } = await supabase.auth.signOut();
-    if (error) return showError(document.getElementById('admin-message'), error);
+    if (error) return showError(
+        document.getElementById('admin-message')
+            || document.getElementById('lgu-message')
+            || document.getElementById('login-message'),
+        error
+    );
     window.location.assign('index.html');
 }
 
@@ -897,6 +1015,8 @@ function start() {
     }
     if (!configured) {
         const target = document.getElementById('login-message')
+            || document.getElementById('password-message')
+            || document.getElementById('lgu-message')
             || document.getElementById('admin-message')
             || document.getElementById('announcement-list')
             || document.getElementById('officials-list')
@@ -908,6 +1028,17 @@ function start() {
     if (page === 'login') {
         window.BSPIS_LOGIN_READY = true;
         document.getElementById('login-form').addEventListener('submit', handleLogin);
+    }
+    if (page === 'set-password') {
+        window.BSPIS_PASSWORD_READY = true;
+        document.getElementById('set-password-form').addEventListener('submit', handleSetPassword);
+        loadPasswordSetup();
+    }
+    if (page === 'lgu-create-admin') {
+        window.BSPIS_LGU_READY = true;
+        document.getElementById('create-admin-form').addEventListener('submit', handleCreateAdmin);
+        document.getElementById('logout-button')?.addEventListener('click', signOut);
+        loadLguAdminPage();
     }
     if (page === 'admin' || page.startsWith('admin-')) {
         setupAdminPage();
