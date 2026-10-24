@@ -241,32 +241,30 @@ const management = {
 
 const adminData = {};
 
-function renderOfficialCards(officials, dashboard = false) {
+function renderOfficialCards(officials) {
     const groups = new Map();
     officials.forEach(official => {
         const records = groups.get(official.group_name) || [];
         records.push(official);
         groups.set(official.group_name, records);
     });
-    const target = document.getElementById(dashboard ? 'admin-leadership' : 'official-groups');
+    const target = document.getElementById('official-groups');
     if (!target) return;
-    const tierHtml = (records, tier, isDashboard) => {
+    const tierHtml = (records, label, modifier) => {
         if (!records.length) return '';
-        const tierName = tier === 1 ? 'Chairperson' : tier === 2 ? 'Secretary & Treasurer' : 'Kagawad / Councilors';
-        const tierClass = tier === 1 ? 'top' : tier === 2 ? 'middle' : '';
-        return `<p class="${isDashboard ? 'admin-home-tier-label' : 'official-tier-label'}">${tierName}</p>
-            <div class="${isDashboard ? 'admin-home-tier' : 'official-chart-grid'} ${tierClass ? `${isDashboard ? 'admin-home-tier' : 'official-chart-grid'}--${tierClass}` : ''}">
-                ${records.map(official => `<article class="${isDashboard ? 'admin-home-official-card' : 'official-card'}">
+        return `<p class="official-tier-label">${label}</p>
+            <div class="official-chart-grid${modifier ? ` official-chart-grid--${modifier}` : ''}">
+                ${records.map(official => `<article class="official-card">
                     <img src="${escapeHtml(imageUrl(official.image, 'officials'))}" alt="${escapeHtml(official.position)}">
-                    <div class="${isDashboard ? '' : 'official-card-copy'}">
-                        ${isDashboard ? `<small>${escapeHtml(official.position)}</small>` : `<span>${escapeHtml(official.position)}</span>`}
+                    <div class="official-card-copy">
+                        <span>${escapeHtml(official.position)}</span>
                         <h3>${escapeHtml(official.name)}</h3>
-                        ${official.description && (tier === 1 || isDashboard) ? `<p>${escapeHtml(official.description)}</p>` : ''}
+                        ${official.description && label === 'Chairperson' ? `<p>${escapeHtml(official.description)}</p>` : ''}
                     </div>
-                    ${isDashboard ? '' : `<div class="official-card-actions">
+                    <div class="official-card-actions">
                         <button type="button" data-edit="officials" data-record="${escapeHtml(JSON.stringify(official))}">Edit</button>
                         <button type="button" data-delete="officials" data-id="${official.id}">Delete</button>
-                    </div>`}
+                    </div>
                 </article>`).join('')}
             </div>`;
     };
@@ -278,21 +276,17 @@ function renderOfficialCards(officials, dashboard = false) {
             const rank = Number(record.position_rank) || 99;
             tiers[rank <= 1 ? 0 : rank <= 3 ? 1 : 2].push(record);
         });
-        return `<section class="${dashboard ? '' : 'official-group'}">
-            <div class="${dashboard ? 'dashboard-leadership-header' : 'official-group-heading'}">
+        return `<section class="official-group">
+            <div class="official-group-heading">
                 <h2>${escapeHtml(group || 'Other')}</h2><span>${records.length} profiles</span>
             </div>
-            ${tierHtml(tiers[0], 1, dashboard)}${tierHtml(tiers[1], 2, dashboard)}${tierHtml(tiers[2], 4, dashboard)}
+            ${tierHtml(tiers[0], 'Chairperson', 'top')}
+            ${tierHtml(tiers[1], 'Secretary & Treasurer', 'middle')}
+            ${tierHtml(tiers[2], 'Kagawad / Councilors', '')}
         </section>`;
     }).join('') || '<p>No officials have been added yet.</p>';
-    if (!dashboard) {
-        const count = document.getElementById('official-count');
-        if (count) count.textContent = officials.length;
-    }
-    if (dashboard) {
-        const count = document.getElementById('official-count');
-        if (count) count.textContent = `${officials.length} officials`;
-    }
+    const count = document.getElementById('official-count');
+    if (count) count.textContent = officials.length;
 }
 
 function renderFundAdmin() {
@@ -503,28 +497,7 @@ async function loadAdmin() {
         );
         if (tables.length) {
             await Promise.all(tables.map(refreshTable));
-            return;
         }
-        const counts = await Promise.all(['residents', 'funds', 'announcements'].map(async table => {
-            const { count, error } = await supabase.from(table).select('id', { count: 'exact', head: true });
-            if (error) throw error;
-            return [table, count];
-        }));
-        const countElements = {
-            residents: 'resident-count',
-            funds: 'fund-count',
-            announcements: 'announcement-count'
-        };
-        counts.forEach(([table, count]) => {
-            const element = document.getElementById(countElements[table]);
-            if (element) element.textContent = count;
-        });
-        const { data: officials, error: officialsError } = await supabase.from('officials')
-            .select('id,name,position,group_name,position_rank,description,image')
-            .order('group_name').order('position_rank').order('name');
-        if (officialsError) throw officialsError;
-        adminData.officials = officials;
-        renderOfficialCards(officials, true);
     } catch (error) {
         showError(message, error);
     }
@@ -539,7 +512,7 @@ async function handleLogin(event) {
         password: form.elements.password.value
     });
     if (error) return showError(message, error);
-    window.location.assign('admin.html');
+    window.location.assign('admin-officials.html');
 }
 
 async function handleAdminSubmit(event) {

@@ -1,42 +1,20 @@
-.admin-dashboard-page { padding-bottom: 64px; }
-.admin-dashboard-header,
 .admin-officials-header { display: flex; align-items: end; justify-content: space-between; gap: 20px; padding: 55px 0 26px; }
-.admin-dashboard-header h1,
 .admin-officials-header h1 { margin: 0 0 10px; color: #f4fffd; font-family: Georgia, serif; font-size: clamp(2.2rem, 5vw, 4rem); }
-.admin-dashboard-header p:last-child,
 .admin-officials-header p:last-child { color: #9db8b8; }
-.dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-bottom: 30px; }
-.dash-card { padding: 24px 20px; border: 1px solid rgba(142,236,224,.14); border-radius: 18px; background: rgba(10,28,35,.78); color: #d7f8f3; }
-.dash-card .label { display: block; margin-bottom: 10px; font-size: .76rem; letter-spacing: .12em; text-transform: uppercase; color: #8de9dc; }
-.dash-card strong { display: block; margin: 0; font-size: 2.1rem; color: #f4fffd; }
-.dashboard-leadership { margin-top: 10px; padding: 24px; border: 1px solid rgba(142,236,224,.13); border-radius: 18px; background: rgba(10,28,35,.6); }
-.dashboard-leadership-header,
 .official-group-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
-.dashboard-leadership-header h2,
 .official-group-heading h2 { margin: 0; color: #f4fffd; }
-.dashboard-leadership-header span,
 .official-group-heading span { color: #8de9dc; font-size: .75rem; }
-.admin-home-tier,
 .official-chart-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-.admin-home-tier--top,
 .official-chart-grid--top { display: flex; justify-content: center; }
-.admin-home-tier--middle,
 .official-chart-grid--middle { grid-template-columns: repeat(2, minmax(0, 260px)); justify-content: center; }
-.admin-home-tier-label,
 .official-tier-label { margin: 18px 0 8px; color: #6f9d98; font-size: .68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
-.admin-home-official-card,
-.official-card { display: flex; align-items: center; gap: 14px; min-width: 0; padding: 15px; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; background: rgba(255,255,255,.045); }
-.admin-home-tier--top .admin-home-official-card { width: min(100%, 360px); }
-.admin-home-official-card img,
-.official-card img { width: 68px; height: 68px; flex: 0 0 auto; object-fit: cover; border-radius: 12px; border: 1px solid rgba(0,227,194,.2); }
-.admin-home-official-card div,
+.official-card { display: grid; grid-template-columns: 76px minmax(0,1fr); align-items: center; gap: 15px; min-width: 0; padding: 16px; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; background: rgba(255,255,255,.045); box-shadow: 0 12px 30px rgba(0,0,0,.1); }
+.official-card img { width: 76px; height: 76px; object-fit: cover; border-radius: 13px; border: 1px solid rgba(0,227,194,.22); }
 .official-card-copy { min-width: 0; }
-.admin-home-official-card small,
-.official-card-copy span { display: block; margin-bottom: 5px; color: #00e3c2; font-size: .65rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-.admin-home-official-card h3,
-.official-card-copy h3 { margin: 0; color: #f4fffd; font-size: 1rem; overflow-wrap: anywhere; }
-.admin-home-official-card p,
-.official-card-copy p { margin: 6px 0 0; color: #9db8b8; font-size: .78rem; line-height: 1.4; }
+.official-card-copy span { display: block; margin-bottom: 5px; color: #00e3c2; font-size: .68rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.official-card-copy h3 { margin: 0; color: #f4fffd; font-size: 1.05rem; overflow-wrap: anywhere; }
+.official-card-copy p { margin: 7px 0 0; color: #9db8b8; font-size: .82rem; line-height: 1.45; }
+.official-group { margin-bottom: 34px; }
 .admin-officials-page { padding-bottom: 70px; }
 .admin-officials-header { padding-top: 55px; }
 .official-control-bar,
@@ -151,11 +129,9 @@
 .announcement-admin .composer-panel button { padding: 12px 16px; border: 0; border-radius: 8px; background: #00e3c2; color: #06201f; font: inherit; font-weight: 800; cursor: pointer; }
 .announcement-admin .announcement-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 @media (max-width: 800px) {
-    .admin-dashboard-header,.admin-officials-header { align-items: flex-start; flex-direction: column; }
-    .admin-home-tier,.admin-home-tier--middle,.official-chart-grid,.official-chart-grid--middle { grid-template-columns: repeat(2,minmax(0,1fr)); }
-    .admin-home-tier--top,.official-chart-grid--top { display: grid; }
-    .admin-home-tier--top .admin-home-official-card { width: 100%; }
-    .dashboard-leadership-header { align-items: flex-start; flex-direction: column; }
+    .admin-officials-header { align-items: flex-start; flex-direction: column; }
+    .official-chart-grid,.official-chart-grid--middle { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .official-chart-grid--top { display: grid; }
     .funds-admin-page .funds-wrapper { grid-template-columns: 1fr; }
     .funds-admin-page .funds-sidebar { position: static; max-width: none; max-height: none; overflow: visible; }
     .announcement-admin { grid-template-columns: 1fr; }
