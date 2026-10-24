@@ -79,10 +79,33 @@
 .public-officials-header { padding: 54px 0 32px; }
 .public-officials-header h1 { margin: 0 0 10px; color: #f4fffd; font-family: Georgia,serif; font-size: clamp(2.3rem,5vw,4rem); }
 .public-officials-page { padding-bottom: 64px; }
+.public-org-chart { display: flex; flex-direction: column; align-items: center; }
+.public-chart-level { position: relative; width: 100%; }
+.public-chart-level > .public-tier-label { margin: 0 0 10px; text-align: center; }
+.public-chart-connector { width: 1px; height: 28px; background: rgba(0,227,194,.42); }
+.public-chart-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; }
+.public-chart-grid--top { display: flex; justify-content: center; }
+.public-chart-grid--top .public-official-card { width: min(100%,360px); }
+.public-chart-grid--middle { grid-template-columns: repeat(2,minmax(0,260px)); justify-content: center; }
+.public-chart-grid--extras { margin-top: 14px; }
+.public-chart-grid .public-official-card { display: grid; grid-template-columns: 76px minmax(0,1fr); align-items: center; gap: 15px; min-width: 0; padding: 16px; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; background: rgba(255,255,255,.045); box-shadow: 0 12px 30px rgba(0,0,0,.1); }
+.public-chart-grid .public-official-card--occupied { border-color: rgba(0,227,194,.22); background: rgba(10,28,35,.76); }
+.public-chart-grid .public-official-card--empty { min-height: 104px; grid-template-columns: 54px minmax(0,1fr); border-style: dashed; border-color: rgba(142,236,224,.38); background: rgba(255,255,255,.025); box-shadow: none; }
+.public-chart-grid .public-official-card img { width: 76px; height: 76px; border: 1px solid rgba(0,227,194,.22); border-radius: 13px; object-fit: cover; }
+.public-chart-grid .public-official-card--empty img { width: 54px; height: 54px; border-color: rgba(142,236,224,.22); border-radius: 50%; background: #f4fffd; }
+.public-official-card-copy { min-width: 0; }
+.public-chart-grid .public-official-card small { display: block; margin-bottom: 5px; color: #00e3c2; font-size: .68rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.public-chart-grid .public-official-card h3 { margin: 0; color: #f4fffd; font-size: 1.05rem; overflow-wrap: anywhere; }
+.public-chart-grid .public-official-card--empty h3 { margin-top: 5px; color: #9db8b8; font-size: .9rem; font-weight: 500; }
+.public-chart-grid .public-official-card p { margin: 7px 0 0; color: #9db8b8; font-size: .82rem; line-height: 1.45; }
 
 @media (max-width: 700px) {
     .public-directory-group,
     .public-official-group { padding: 18px 14px; }
+    .public-chart-grid,
+    .public-chart-grid--middle { grid-template-columns: 1fr; }
+    .public-chart-grid--top { display: grid; }
+    .public-chart-grid--top .public-official-card { width: 100%; }
     .public-directory-tier,
     .public-directory-tier--middle,
     .public-tier,
