@@ -430,10 +430,7 @@ async function loadFunds() {
             document.querySelector('.funds-header .page-heading p').textContent =
                 `View annual budgets and expenses for ${selectedCategoryLabel} funds.`;
             document.querySelector('.budget-card h2').textContent = `${selectedCategoryLabel} Current Budget`;
-            document.getElementById('budget-summary').previousElementSibling.textContent = `${selectedCategoryLabel} Current Budget`;
             document.getElementById('current-budget').textContent = `₱${current.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
-            document.getElementById('budget-summary').textContent = `₱${current.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
-            document.getElementById('annual-count').textContent = shownBudgets.length;
             document.getElementById('fund-count').textContent = shownFunds.length;
             annualList.innerHTML = shownBudgets.map(item => `
                 <article class="fund-post"><div class="fund-post-header"><h3>Annual Budget ${escapeHtml(item.year)}</h3>
@@ -673,17 +670,11 @@ function renderFundAdmin() {
     const currentBudget = annualTotal - expenseTotal;
     const formattedBudget = `₱${currentBudget.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
     const currentBudgetTarget = document.getElementById('admin-current-budget');
-    const summaryTarget = document.getElementById('admin-budget-summary');
     const categoryLabel = category === 'SK' ? 'SK' : 'Barangay';
     const budgetHeading = document.querySelector('.funds-sidebar .budget-card h2');
-    const summaryHeading = summaryTarget?.previousElementSibling;
     if (budgetHeading) budgetHeading.textContent = `${categoryLabel} Current Budget`;
-    if (summaryHeading) summaryHeading.textContent = `${categoryLabel} Current Budget`;
     if (currentBudgetTarget) currentBudgetTarget.textContent = formattedBudget;
-    if (summaryTarget) summaryTarget.textContent = formattedBudget;
-    const annualCount = document.getElementById('admin-annual-count');
     const expenseCount = document.getElementById('admin-expense-count');
-    if (annualCount) annualCount.textContent = shownBudgets.length;
     if (expenseCount) expenseCount.textContent = shownFunds.length;
     if (annualTarget) {
         annualTarget.innerHTML = shownBudgets.map(record => `
