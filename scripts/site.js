@@ -174,10 +174,9 @@ async function loadAnnouncements() {
                     : '<div class="announcement-no-image">Barangay update</div>'}
             </div>
             <div class="announcement-card-content">
-                <div class="announcement-card-meta">
-                    <span class="announcement-type">Community notice</span>
-                    <time class="announcement-date" datetime="${escapeHtml(item.publish_date || '')}">${escapeHtml(formatDate(item.publish_date))}</time>
-                </div>
+            <div class="announcement-card-meta">
+                <time class="announcement-date" datetime="${escapeHtml(item.publish_date || '')}">${escapeHtml(formatDate(item.publish_date))}</time>
+            </div>
                 <h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(preview(item.message))}</p>
             </div>
         </article>`).join('')}</div>`;
@@ -1064,6 +1063,19 @@ function filterResidents() {
 function start() {
     document.querySelectorAll('[data-year]').forEach(element => {
         element.textContent = new Date().getFullYear();
+    });
+    const currentPage = document.body.dataset.page || '';
+    const navTarget = {
+        home: 'index.html',
+        'residents-public': 'residents.html',
+        'admin-resident-form': 'admin-residents.html'
+    }[currentPage] || `${currentPage}.html`;
+    document.querySelectorAll('.nav a[href]').forEach(link => {
+        if (link.pathname.split('/').pop() === navTarget) {
+            link.setAttribute('aria-current', 'page');
+        } else {
+            link.removeAttribute('aria-current');
+        }
     });
     document.querySelector('.menu-toggle')?.addEventListener('click', () => {
         document.querySelector('.nav')?.classList.toggle('active');
