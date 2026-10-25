@@ -1071,7 +1071,20 @@ function start() {
         'admin-resident-form': 'admin-residents.html'
     }[currentPage] || `${currentPage}.html`;
     document.querySelectorAll('.nav a[href]').forEach(link => {
-        if (link.pathname.split('/').pop() === navTarget) {
+        const isPublicOfficialsLink = !currentPage.startsWith('admin-')
+            && link.hash === '#officials'
+            && link.pathname.split('/').pop() === 'index.html';
+        const isHomeOfficialsSection = currentPage === 'home'
+            && window.location.hash === '#officials';
+        const isPublicHomeLink = !currentPage.startsWith('admin-')
+            && !link.hash
+            && link.pathname.split('/').pop() === 'index.html';
+        const isCurrentPage = isPublicOfficialsLink
+            ? currentPage === 'officials' || isHomeOfficialsSection
+            : isPublicHomeLink && isHomeOfficialsSection
+                ? false
+                : link.pathname.split('/').pop() === navTarget;
+        if (isCurrentPage) {
             link.setAttribute('aria-current', 'page');
         } else {
             link.removeAttribute('aria-current');
