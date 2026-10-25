@@ -3,6 +3,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 const page = document.body.dataset.page;
 let pendingHomeOfficialsScroll = false;
 let publicFundRecords = [];
+let adminFundRecords = [];
 const supabaseUrl = window.BSPIS_SUPABASE_URL;
 const supabaseKey = window.BSPIS_SUPABASE_ANON_KEY;
 const configured = supabaseUrl && !supabaseUrl.includes('YOUR_PROJECT_REF')
@@ -97,7 +98,8 @@ function setupFundImageViewer() {
     document.addEventListener('click', event => {
         const trigger = event.target.closest('[data-fund-record][data-fund-image]');
         if (trigger) {
-            const record = publicFundRecords[Number(trigger.dataset.fundRecord)];
+            const recordSource = page === 'funds' ? publicFundRecords : adminFundRecords;
+            const record = recordSource[Number(trigger.dataset.fundRecord)];
             if (!record) return;
             currentImages = fundImageUrls(record.image);
             if (!currentImages.length) return;
@@ -681,6 +683,7 @@ function renderFundAdmin() {
         && (!year || String(row.year) === year));
     const shownFunds = funds.filter(row => (row.category || 'Barangay') === category
         && (!year || String(row.year) === year));
+    adminFundRecords = shownFunds;
     const annualTotal = shownBudgets.reduce((sum, row) => sum + Number(row.amount || 0), 0);
     const expenseTotal = shownFunds.reduce((sum, row) => sum + Math.abs(Number(row.amount || 0)), 0);
     const currentBudget = annualTotal - expenseTotal;
@@ -699,7 +702,7 @@ function renderFundAdmin() {
                     <span class="fund">₱${Number(record.amount || 0).toLocaleString('en-PH', { minimumFractionDigits: 2 })}</span></div>
                 <span class="fund-category-badge">${escapeHtml(record.category || 'Barangay')} Funds</span>
                 <p>${escapeHtml(record.description || '')}</p>
-                ${record.image ? `<img src="${escapeHtml(imageUrl(record.image, 'funds'))}" alt="Annual budget image">` : ''}
+                ${record.image ? `<img class="sidebar-budget-image" src="${escapeHtml(imageUrl(record.image, 'funds'))}" alt="Annual budget image">` : ''}
                 <div class="post-actions">
                     <button type="button" data-edit="annual_budgets" data-record="${escapeHtml(JSON.stringify(record))}">Edit</button>
                     <button type="button" class="delete-btn" data-delete="annual_budgets" data-id="${record.id}">Delete</button>
@@ -707,14 +710,14 @@ function renderFundAdmin() {
             </article>`).join('') || '<div class="empty-state">No annual budgets have been added yet.</div>';
     }
     if (fundsTarget) {
-        fundsTarget.innerHTML = shownFunds.map(record => `
+        fundsTarget.innerHTML = shownFunds.map((record, index) => `
             <article class="fund-post">
                 <span class="fund-category-badge">${escapeHtml(record.category || 'Barangay')} Funds</span>
                 <div class="fund-post-header"><h3>${escapeHtml(record.fund_name)}</h3>
                     <span class="expense">₱${Math.abs(Number(record.amount || 0)).toLocaleString('en-PH', { minimumFractionDigits: 2 })}</span></div>
                 <div class="meta-line"><span class="quarter">${escapeHtml(record.quarter || '')}</span><small>${escapeHtml(record.date_received || '')}</small></div>
                 <p>${escapeHtml(record.description || '')}</p>
-                ${renderFundImageGallery(record.image)}
+                ${renderFundImageGallery(record.image, index, true)}
                 <div class="post-actions">
                     <button type="button" data-edit="funds" data-record="${escapeHtml(JSON.stringify(record))}">Edit</button>
                     <button type="button" class="delete-btn" data-delete="funds" data-id="${record.id}">Delete</button>
@@ -1329,6 +1332,7 @@ function start() {
         loadLguAdminPage();
     }
     if (page === 'admin' || page.startsWith('admin-')) {
+        if (page === 'admin-funds') setupFundImageViewer();
         setupAdminPage();
         loadAdmin();
     }
