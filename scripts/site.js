@@ -18,6 +18,28 @@ function imageUrl(path, folder) {
     return `assets/images/${folder}/${String(path).replace(/^\/+/, '')}`;
 }
 
+function fundImageUrls(value) {
+    if (!value) return [];
+    if (Array.isArray(value)) return value.filter(image => typeof image === 'string' && image);
+    const storedValue = String(value);
+    try {
+        const parsed = JSON.parse(storedValue);
+        if (Array.isArray(parsed)) return parsed.filter(image => typeof image === 'string' && image);
+    } catch {
+        return [storedValue];
+    }
+    return [storedValue];
+}
+
+function renderFundImageGallery(value) {
+    const images = fundImageUrls(value);
+    if (!images.length) return '';
+    const size = images.length === 1 ? 'fund-image-gallery--single' : 'fund-image-gallery--multiple';
+    return `<div class="fund-image-gallery ${size}" aria-label="${images.length} expense image${images.length === 1 ? '' : 's'}">
+        ${images.map((image, index) => `<img src="${escapeHtml(imageUrl(image, 'funds'))}" alt="Expense image ${index + 1}" loading="lazy">`).join('')}
+    </div>`;
+}
+
 function showError(target, error) {
     if (!target) return;
     target.textContent = error?.message || 'Something went wrong. Please try again.';
@@ -336,7 +358,7 @@ async function loadFunds() {
                 <span class="fund-category-badge">${escapeHtml(item.category || 'Barangay')} Funds</span>
                 <div class="meta-line"><span class="quarter">${escapeHtml(item.quarter || '')}</span><small>${escapeHtml(item.date_received || '')}</small></div>
                 <p>${escapeHtml(item.description)}</p>
-                ${item.image ? `<img src="${escapeHtml(imageUrl(item.image, 'funds'))}" alt="">` : ''}</article>
+                ${renderFundImageGallery(item.image)}</article>
             `).join('') || '<div class="empty-state">No expenses posted yet.</div>';
         };
         yearSelect.addEventListener('change', render);
@@ -593,7 +615,7 @@ function renderFundAdmin() {
                 <span class="fund-category-badge">${escapeHtml(record.category || 'Barangay')} Funds</span>
                 <div class="meta-line"><span class="quarter">${escapeHtml(record.quarter || '')}</span><small>${escapeHtml(record.date_received || '')}</small></div>
                 <p>${escapeHtml(record.description || '')}</p>
-                ${record.image ? `<img src="${escapeHtml(imageUrl(record.image, 'funds'))}" alt="Expense image">` : ''}
+                ${renderFundImageGallery(record.image)}
                 <div class="post-actions">
                     <button type="button" data-edit="funds" data-record="${escapeHtml(JSON.stringify(record))}">Edit</button>
                     <button type="button" class="delete-btn" data-delete="funds" data-id="${record.id}">Delete</button>
@@ -683,12 +705,22 @@ function populateForm(form, record) {
 
 async function saveRecord(table, form) {
     const id = form.elements.namedItem('id').value;
-    const imageFile = form.elements.namedItem('image')?.files?.[0];
+    const imageInput = form.elements.namedItem('image');
     const values = formValues(form);
     if (table === 'announcements' && !values.publish_date) values.publish_date = null;
     if (table === 'funds' && !values.date_received) values.date_received = null;
-    const imageUrl = await uploadImage(imageFile, table);
-    if (imageUrl) values.image = imageUrl;
+    if (table === 'funds') {
+        const existingRecord = adminData.funds?.find(record => String(record.id) === String(id));
+        const existingImages = fundImageUrls(existingRecord?.image);
+        const uploadedImages = await Promise.all(
+            [...(imageInput?.files || [])].map(file => uploadImage(file, table))
+        );
+        const imageUrls = [...existingImages, ...uploadedImages.filter(Boolean)];
+        if (imageUrls.length) values.image = JSON.stringify(imageUrls);
+    } else {
+        const imageUrl = await uploadImage(imageInput?.files?.[0], table);
+        if (imageUrl) values.image = imageUrl;
+    }
     if (table === 'funds') {
         const selectedYear = Number(values.year);
         const category = values.category || 'Barangay';
