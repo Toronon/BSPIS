@@ -329,16 +329,24 @@ body {
 .fund-image-viewer-panel {
     position:relative;
     display:grid;
-    grid-template-rows:auto minmax(0,1fr) auto;
+    grid-template-rows:auto auto auto;
+    align-content:start;
     gap:16px;
     width:min(100%,1000px);
     max-height:calc(100vh - 48px);
+    overflow-x:hidden;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    scrollbar-width:thin;
+    scrollbar-color:rgba(0,255,213,.45) rgba(255,255,255,.06);
     padding:26px;
     border:1px solid rgba(142,236,224,.2);
     border-radius:18px;
     background:linear-gradient(145deg,#102a32,#07151b);
     box-shadow:0 24px 80px rgba(0,0,0,.5);
 }
+.fund-image-viewer-panel::-webkit-scrollbar {width:8px}
+.fund-image-viewer-panel::-webkit-scrollbar-thumb {border-radius:999px;background:rgba(0,255,213,.45)}
 .fund-image-viewer-details {padding-right:42px}
 .fund-image-viewer-meta {color:#8adad3;font-size:.85rem}
 .fund-image-viewer-heading {display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-top:7px}
@@ -351,6 +359,7 @@ body {
     width:100%;
     height:clamp(320px,60vh,500px);
     min-height:320px;
+    flex:none;
     overflow:hidden;
     border-radius:12px;
     background:rgba(0,0,0,.28);
