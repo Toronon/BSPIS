@@ -86,7 +86,7 @@
 .public-chart-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; }
 .public-chart-grid--top { display: flex; justify-content: center; }
 .public-chart-grid--top .public-official-card { width: min(100%,360px); }
-.public-chart-grid--middle { grid-template-columns: repeat(2,minmax(0,260px)); justify-content: center; }
+.public-chart-grid--middle { grid-template-columns: repeat(2,minmax(0,360px)); justify-content: center; }
 .public-chart-grid--extras { margin-top: 14px; }
 .public-chart-grid .public-official-card { display: grid; grid-template-columns: 76px minmax(0,1fr); align-items: center; gap: 15px; min-width: 0; padding: 16px; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; background: rgba(255,255,255,.045); box-shadow: 0 12px 30px rgba(0,0,0,.1); }
 .public-chart-grid .public-official-card--occupied { border-color: rgba(0,227,194,.22); background: rgba(10,28,35,.76); }
@@ -105,6 +105,12 @@
 #home-officials {scroll-margin-top:96px}
 .public-chart-grid .public-official-card small {font-size:.87rem}
 .public-chart-grid .public-official-card h3 {font-size:1.115rem;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.public-chart-grid--middle .public-official-card h3 {
+    overflow:visible;
+    overflow-wrap:anywhere;
+    text-overflow:clip;
+    white-space:normal;
+}
 .public-chart-grid .public-official-card--empty h3 {font-size:1.115rem}
 .public-chart-grid .public-official-card p {font-size:1.05rem;font-style:italic}
 .public-official-group-heading span,
@@ -127,6 +133,10 @@
     .public-tier--top .public-official-card { width: 100%; }
     .public-directory-group-heading,
     .public-official-group-heading { align-items: flex-start; flex-direction: column; gap: 7px; }
+}
+
+@media (max-width: 780px) {
+    .public-chart-grid--middle {grid-template-columns:minmax(0, 1fr);width:min(100%, 420px);margin-inline:auto}
 }
 
 .official-section {
