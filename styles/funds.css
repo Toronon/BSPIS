@@ -385,10 +385,10 @@ body.fund-image-viewer-open {overflow:hidden}
     display:flex;
     flex-direction:column;
     gap:18px;
-    max-height:calc(100vh - 130px);
+    max-height:none;
     width:100%;
     max-width:240px;
-    overflow-y:auto;
+    overflow:visible;
     padding-right:4px;
     margin-left:0;
     min-width:0;
@@ -852,9 +852,10 @@ body.fund-image-viewer-open {overflow:hidden}
     position: sticky;
     top: 105px;
     align-self: stretch;
-    min-height: calc(100vh - 104px);
+    min-height: 0;
     max-width: 360px;
-    max-height: calc(100vh - 120px);
+    max-height: none;
+    overflow: visible;
     padding: 18px 12px;
     border-radius: 16px;
     background: linear-gradient(180deg, rgba(8,45,78,.96), rgba(7,29,51,.96));
@@ -863,7 +864,8 @@ body.fund-image-viewer-open {overflow:hidden}
 .public-funds-page .funds-sidebar .section-panel {border-radius:14px}
 .public-funds-page .funds-sidebar .fund-post {padding:14px 12px}
 .public-funds-page .funds-sidebar .fund-post img.sidebar-budget-image {
-    display:block;width:100%;height:86px;object-fit:cover;margin-top:10px;border-radius:9px;
+    display:block;width:100%;height:430px;object-fit:contain;margin-top:10px;border-radius:9px;
+    background:rgba(3,15,20,.48);
     border:1px solid rgba(255,255,255,.08)
 }
 .public-funds-page .funds-sidebar .section-panel {
@@ -900,6 +902,7 @@ body.fund-image-viewer-open {overflow:hidden}
     .public-funds-page .funds-sidebar {
         position:relative;top:0;max-width:none;max-height:none;min-height:auto;overflow:visible
     }
+    .public-funds-page .funds-sidebar .fund-post img.sidebar-budget-image {height:320px}
 }
 @media screen and (max-width:760px) {
     .fund-image-gallery--4 {grid-template-columns:repeat(2,minmax(0,240px))}
