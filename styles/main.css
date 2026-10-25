@@ -675,6 +675,49 @@ td {border-bottom: 1px solid rgba(142,236,224,.1)}
     .announcement-admin > .published-toolbar {align-self:auto;padding-bottom:0}
     .announcement-admin .table-scroll {max-height:none}
 }
+
+/* Shared navigation sizing and current-page indicator */
+.logo,
+.logo:hover {text-decoration:none}
+.logo img {width:48px;height:48px}
+.logo span {font-size:1.5rem}
+.nav {gap:8px}
+.nav a {
+    position:relative;
+    padding:10px 13px;
+    font-size:1.06rem;
+    transition:color .2s ease,background .2s ease,box-shadow .2s ease;
+}
+.nav a:hover {
+    background:rgba(0,227,194,.14);
+    color:#fff;
+}
+.nav a[aria-current="page"] {
+    background:rgba(0,227,194,.16);
+    color:#fff;
+    box-shadow:inset 0 -3px 0 #00e3c2,0 0 18px rgba(0,227,194,.12);
+}
+.nav .btn {
+    padding:12px 18px;
+    font-size:1.06rem;
+}
+.nav .btn:hover {background:#fff;color:#06201f}
+.menu-toggle {font-size:2rem}
+
+@media(max-width:900px) and (min-width:769px) {
+    .header-container {padding:0 14px}
+    .logo img {width:42px;height:42px}
+    .logo span {font-size:1.35rem}
+    .nav {gap:2px}
+    .nav a {padding:9px 8px;font-size:1rem}
+    .nav .btn {padding:10px 12px;font-size:1rem}
+}
+
+@media(max-width:768px) {
+    .logo img {width:46px;height:46px}
+    .logo span {font-size:1.4rem}
+    .nav a[aria-current="page"] {box-shadow:inset 3px 0 0 #00e3c2,0 0 16px rgba(0,227,194,.1)}
+}
 .public-official-group,
 .admin-panel {
     margin: 24px 0;
