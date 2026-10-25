@@ -215,3 +215,11 @@
     .official-modal-form label.full,.official-modal-actions { grid-column: auto; }
     .official-modal-actions { align-items: stretch; flex-direction: column; }
 }
+
+.official-group-heading span,
+.official-group-tools span,
+.official-tier-label {font-size:.94rem}
+.official-card-copy span {font-size:.87rem}
+.official-card-copy h3 {font-size:1.24rem}
+.official-card--empty .official-card-copy h3 {font-size:1.09rem}
+.official-card-copy p {font-size:1.01rem}
