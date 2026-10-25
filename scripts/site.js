@@ -237,6 +237,35 @@ async function loadAnnouncements() {
     });
 }
 
+async function loadResidentPopulation() {
+    const container = document.getElementById('public-resident-population');
+    if (!container) return;
+    const status = container.querySelector('.resident-population-status');
+    const grid = container.querySelector('.resident-population-grid');
+    try {
+        const { data, error } = await supabase.rpc('get_public_resident_population');
+        if (error) throw error;
+        const values = [
+            data?.total,
+            data?.puroks?.['1'],
+            data?.puroks?.['2'],
+            data?.puroks?.['3']
+        ];
+        if (values.some(value => !Number.isInteger(value) || value < 0)) {
+            throw new Error('Population totals are unavailable. Please contact the Barangay San Pablo office.');
+        }
+        document.getElementById('resident-population-total').textContent = values[0].toLocaleString();
+        document.getElementById('resident-population-purok-1').textContent = values[1].toLocaleString();
+        document.getElementById('resident-population-purok-2').textContent = values[2].toLocaleString();
+        document.getElementById('resident-population-purok-3').textContent = values[3].toLocaleString();
+        status.hidden = true;
+        grid.hidden = false;
+    } catch (error) {
+        showError(status, error);
+        status.className = 'resident-population-status resident-population-error';
+    }
+}
+
 async function loadFunds() {
     const yearSelect = document.getElementById('fund-year');
     if (!yearSelect) return;
@@ -1077,6 +1106,7 @@ function start() {
             || document.getElementById('lgu-message')
             || document.getElementById('admin-message')
             || document.getElementById('announcement-list')
+            || document.getElementById('public-resident-population')
             || document.getElementById('officials-list')
             || document.getElementById('home-officials')
             || document.getElementById('fund-list');
@@ -1106,6 +1136,7 @@ function start() {
     if (page === 'home') loadOfficials();
     if (page === 'admin-home') loadOfficials();
     if (page === 'announcements') loadAnnouncements();
+    if (page === 'residents-public') loadResidentPopulation();
     if (page === 'funds') loadFunds();
 }
 
