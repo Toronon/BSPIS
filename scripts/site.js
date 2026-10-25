@@ -184,7 +184,9 @@ function renderOfficials(officials, container) {
     const renderGroup = group => {
         const records = groups.get(group);
         const isYouthCouncil = /sangguniang kabataan|\bsk\b/i.test(group || '');
-        const chairmanTitle = isYouthCouncil ? 'SK Chairperson' : 'Barangay Captain';
+        const chairmanTitle = isYouthCouncil
+            ? 'SK Chairperson (Sangguniang Kabataan)'
+            : 'Punong Barangay (Barangay Captain)';
         const byRank = rank => records.find(official => Number(official.position_rank) === rank);
         const assignedCouncilors = new Set();
         const councilorSlots = Array.from({ length: 7 }, (_, index) => {
@@ -621,7 +623,9 @@ function renderOfficialCards(officials) {
             const rank = Number(record.position_rank);
             return rank > 10 || (rank >= 4 && rank <= 10 && !assignedCouncilors.has(record.id));
         });
-        const chairLabel = isYouthCouncil ? 'SK Chairperson' : 'Barangay Captain';
+        const chairLabel = isYouthCouncil
+            ? 'SK Chairperson (Sangguniang Kabataan)'
+            : 'Punong Barangay (Barangay Captain)';
         const councilorHeading = isYouthCouncil ? 'SK Kagawad Positions' : 'Kagawad Positions';
         const chartTiers = `
             <section class="official-chart-level">
