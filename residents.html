@@ -11,46 +11,55 @@
         <section class="resident-population-dashboard" id="public-resident-population" aria-live="polite" aria-label="Population totals">
             <p class="resident-population-status">Loading population totals…</p>
             <div class="resident-population-grid" hidden>
-                <article class="resident-population-card resident-population-card--total">
-                    <p>Total Population</p><strong id="resident-population-total">—</strong><span>Residents recorded</span>
-                </article>
-                <article class="resident-population-card">
-                    <p>Purok 1</p><strong id="resident-population-purok-1">—</strong><span>Residents</span>
-                </article>
-                <article class="resident-population-card">
-                    <p>Purok 2</p><strong id="resident-population-purok-2">—</strong><span>Residents</span>
-                </article>
-                <article class="resident-population-card">
-                    <p>Purok 3</p><strong id="resident-population-purok-3">—</strong><span>Residents</span>
-                </article>
-                <article class="resident-population-card">
-                    <p>Male</p><strong id="resident-population-male">—</strong><span>Residents recorded as male</span>
-                </article>
-                <article class="resident-population-card">
-                    <p>Female</p><strong id="resident-population-female">—</strong><span>Residents recorded as female</span>
-                </article>
-                <h2 class="resident-population-section-heading">Civil Status</h2>
-                <article class="resident-population-card">
-                    <p>Single</p><strong id="resident-population-single">—</strong><span>Residents</span>
-                </article>
-                <article class="resident-population-card">
-                    <p>Married</p><strong id="resident-population-married">—</strong><span>Residents</span>
-                </article>
-                <article class="resident-population-card">
-                    <p>Separated</p><strong id="resident-population-separated">—</strong><span>Residents</span>
-                </article>
-                <article class="resident-population-card">
-                    <p>Divorced</p><strong id="resident-population-divorced">—</strong><span>Residents</span>
-                </article>
-                <article class="resident-population-card">
-                    <p>Widowed</p><strong id="resident-population-widowed">—</strong><span>Residents</span>
-                </article>
-                <article class="resident-population-card">
-                    <p>Annulled</p><strong id="resident-population-annulled">—</strong><span>Residents</span>
-                </article>
-                <article class="resident-population-card">
-                    <p>Other / Not specified</p><strong id="resident-population-other-status">—</strong><span>Residents</span>
-                </article>
+                <div class="resident-population-overview">
+                    <article class="resident-population-card resident-population-card--total">
+                        <p>Total Population</p><strong id="resident-population-total">—</strong><span>Residents recorded</span>
+                    </article>
+                    <article class="resident-population-card resident-population-card--gender">
+                        <p>Total Male</p><strong id="resident-population-male">—</strong><span>Residents recorded as male</span>
+                    </article>
+                    <article class="resident-population-card resident-population-card--gender">
+                        <p>Total Female</p><strong id="resident-population-female">—</strong><span>Residents recorded as female</span>
+                    </article>
+                </div>
+                <div class="resident-population-puroks">
+                    <article class="resident-population-purok-card">
+                        <header><h2>Purok 1</h2><strong id="resident-population-purok-1">—</strong><span>Residents</span></header>
+                        <div class="resident-population-breakdown">
+                            <h3>Gender</h3>
+                            <p>Male <strong id="purok-1-male">—</strong></p><p>Female <strong id="purok-1-female">—</strong></p>
+                            <h3>Civil Status</h3>
+                            <p>Single <strong id="purok-1-single">—</strong></p><p>Married <strong id="purok-1-married">—</strong></p>
+                            <p>Separated <strong id="purok-1-separated">—</strong></p><p>Divorced <strong id="purok-1-divorced">—</strong></p>
+                            <p>Widowed <strong id="purok-1-widowed">—</strong></p><p>Annulled <strong id="purok-1-annulled">—</strong></p>
+                            <p>Other / Not specified <strong id="purok-1-other">—</strong></p>
+                        </div>
+                    </article>
+                    <article class="resident-population-purok-card">
+                        <header><h2>Purok 2</h2><strong id="resident-population-purok-2">—</strong><span>Residents</span></header>
+                        <div class="resident-population-breakdown">
+                            <h3>Gender</h3>
+                            <p>Male <strong id="purok-2-male">—</strong></p><p>Female <strong id="purok-2-female">—</strong></p>
+                            <h3>Civil Status</h3>
+                            <p>Single <strong id="purok-2-single">—</strong></p><p>Married <strong id="purok-2-married">—</strong></p>
+                            <p>Separated <strong id="purok-2-separated">—</strong></p><p>Divorced <strong id="purok-2-divorced">—</strong></p>
+                            <p>Widowed <strong id="purok-2-widowed">—</strong></p><p>Annulled <strong id="purok-2-annulled">—</strong></p>
+                            <p>Other / Not specified <strong id="purok-2-other">—</strong></p>
+                        </div>
+                    </article>
+                    <article class="resident-population-purok-card">
+                        <header><h2>Purok 3</h2><strong id="resident-population-purok-3">—</strong><span>Residents</span></header>
+                        <div class="resident-population-breakdown">
+                            <h3>Gender</h3>
+                            <p>Male <strong id="purok-3-male">—</strong></p><p>Female <strong id="purok-3-female">—</strong></p>
+                            <h3>Civil Status</h3>
+                            <p>Single <strong id="purok-3-single">—</strong></p><p>Married <strong id="purok-3-married">—</strong></p>
+                            <p>Separated <strong id="purok-3-separated">—</strong></p><p>Divorced <strong id="purok-3-divorced">—</strong></p>
+                            <p>Widowed <strong id="purok-3-widowed">—</strong></p><p>Annulled <strong id="purok-3-annulled">—</strong></p>
+                            <p>Other / Not specified <strong id="purok-3-other">—</strong></p>
+                        </div>
+                    </article>
+                </div>
             </div>
         </section>
     </main>
