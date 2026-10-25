@@ -22,7 +22,10 @@
     box-shadow: inset 0 -3px 0 #00e3c2, 0 0 18px rgba(0,227,194,.12);
 }
 .admin-nav .btn {padding:12px 18px}
-.admin-nav #logout-button {font-weight:400}
+.site-header .admin-nav #logout-button {
+    font-family: 'Segoe UI', sans-serif;
+    font-weight: 400;
+}
 
 @media (max-width: 900px) and (min-width: 769px) {
     .admin-nav {gap:2px}
