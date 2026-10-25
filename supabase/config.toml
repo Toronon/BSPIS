@@ -1,0 +1,2 @@
+[functions.create-admin]
+verify_jwt = true
