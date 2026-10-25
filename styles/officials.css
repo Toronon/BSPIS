@@ -104,9 +104,9 @@
 .public-official-group,
 #home-officials {scroll-margin-top:96px}
 .public-chart-grid .public-official-card small {font-size:.87rem}
-.public-chart-grid .public-official-card h3 {font-size:1.24rem}
-.public-chart-grid .public-official-card--empty h3 {font-size:1.09rem}
-.public-chart-grid .public-official-card p {font-size:1.01rem}
+.public-chart-grid .public-official-card h3 {font-size:1.115rem;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.public-chart-grid .public-official-card--empty h3 {font-size:1.115rem}
+.public-chart-grid .public-official-card p {font-size:1.05rem;font-style:italic}
 .public-official-group-heading span,
 .public-chart-level > .public-tier-label {font-size:.87rem}
 
