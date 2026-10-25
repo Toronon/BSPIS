@@ -344,8 +344,22 @@ body {
 .fund-image-viewer-heading h2 {margin:0;color:#f4fffd;font-size:1.5rem}
 .fund-image-viewer-heading strong {color:#ff7a7a;white-space:nowrap}
 .fund-image-viewer-details p {margin:8px 0 0;color:#dbeaea;white-space:pre-wrap}
-.fund-image-viewer-photo {display:grid;place-items:center;min-height:0;overflow:hidden;border-radius:12px;background:rgba(0,0,0,.28)}
-.fund-image-viewer-photo img {display:block;max-width:100%;max-height:min(60vh,720px);object-fit:contain}
+.fund-image-viewer-photo {
+    display:grid;
+    place-items:center;
+    width:100%;
+    height:clamp(320px,60vh,500px);
+    min-height:320px;
+    overflow:hidden;
+    border-radius:12px;
+    background:rgba(0,0,0,.28);
+}
+.fund-image-viewer-photo img {
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+}
 .fund-image-viewer-close {
     position:absolute;top:12px;right:14px;z-index:1;width:40px;height:40px;
     border:0;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;font-size:1.7rem;cursor:pointer;
@@ -902,7 +916,7 @@ body.fund-image-viewer-open {overflow:hidden}
     .fund-image-viewer {padding:12px}
     .fund-image-viewer-panel {gap:12px;padding:20px 14px;max-height:calc(100vh - 24px)}
     .fund-image-viewer-heading {flex-direction:column;gap:4px}
-    .fund-image-viewer-photo img {max-height:48vh}
+    .fund-image-viewer-photo {height:clamp(240px,48vh,420px);min-height:240px}
     .fund-image-viewer-controls {gap:8px}
     .fund-image-viewer-controls button {padding:8px}
 }
