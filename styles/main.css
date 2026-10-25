@@ -227,6 +227,7 @@ body.login-body {
 .resident-population-card p {color:#8de9dc;font-size:.82rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
 .resident-population-card strong {color:#f4fffd;font-size:clamp(2rem,4vw,3rem);line-height:1}
 .resident-population-card span {color:#9db8b8;font-size:.84rem}
+.resident-population-section-heading {grid-column:1/-1;margin-top:12px;color:#f4fffd;font-size:1.25rem}
 .resident-population-card--total {grid-column:1/-1;min-height:190px;background:linear-gradient(120deg,rgba(0,227,194,.12),rgba(255,255,255,.035))}
 .resident-population-card--total strong {color:#00e3c2;font-size:clamp(3rem,7vw,5rem)}
 .resident-population-status {color:#cbd5e1;line-height:1.6}
