@@ -250,6 +250,8 @@ body {
     margin:10px 0 0;
     color:#dbeaea;
     line-height:1.6;
+    white-space:pre-wrap;
+    overflow-wrap:anywhere;
 }
 
 .fund-post img{
@@ -884,6 +886,12 @@ body.fund-image-viewer-open {overflow:hidden}
 }
 .funds-admin-page .funds-sidebar,
 .funds-admin-page .funds-feed {height:calc(100vh - 114px)}
+.funds-admin-page .funds-wrapper {
+    grid-template-columns:360px minmax(0,1fr);
+    max-width:1320px;
+    padding-top:104px;
+}
+.funds-admin-page .funds-sidebar {max-width:360px}
 .public-funds-page .funds-wrapper {
     grid-template-columns: 360px minmax(0,1fr);
     align-items: stretch;
