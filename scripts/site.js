@@ -379,7 +379,9 @@ async function loadResidentPopulation() {
             data?.total,
             data?.puroks?.['1'],
             data?.puroks?.['2'],
-            data?.puroks?.['3']
+            data?.puroks?.['3'],
+            data?.gender?.male,
+            data?.gender?.female
         ];
         if (values.some(value => !Number.isInteger(value) || value < 0)) {
             throw new Error('Population totals are unavailable. Please contact the Barangay San Pablo office.');
@@ -388,6 +390,8 @@ async function loadResidentPopulation() {
         document.getElementById('resident-population-purok-1').textContent = values[1].toLocaleString();
         document.getElementById('resident-population-purok-2').textContent = values[2].toLocaleString();
         document.getElementById('resident-population-purok-3').textContent = values[3].toLocaleString();
+        document.getElementById('resident-population-male').textContent = values[4].toLocaleString();
+        document.getElementById('resident-population-female').textContent = values[5].toLocaleString();
         status.hidden = true;
         grid.hidden = false;
     } catch (error) {
