@@ -219,7 +219,6 @@ body.login-body {
 .residents-public-page .public-page-header p:last-child {max-width:650px;color:#a8c5c1;line-height:1.6}
 .residents-public-page .section-kicker {margin-bottom:10px;color:#00e3c2;font-size:.75rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
 .residents-public-page .public-header-mark {display:grid;width:74px;height:74px;flex-shrink:0;place-items:center;border:1px solid rgba(0,227,194,.3);border-radius:50%;background:rgba(0,227,194,.08);color:#00e3c2;font-size:2rem}
-.residents-public-page .public-header-mark small {margin-top:-18px;color:#a8c5c1;font-size:.55rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
 .resident-population-dashboard {padding:24px;border:1px solid rgba(142,236,224,.14);border-radius:18px;background:linear-gradient(145deg,rgba(18,58,68,.78),rgba(7,23,29,.9));box-shadow:0 18px 42px rgba(0,0,0,.2)}
 .resident-population-grid {display:grid;gap:20px}
 .resident-population-grid[hidden] {display:none}
