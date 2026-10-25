@@ -891,7 +891,28 @@ body.fund-image-viewer-open {overflow:hidden}
     max-width:1320px;
     padding-top:104px;
 }
-.funds-admin-page .funds-sidebar {max-width:360px}
+.funds-admin-page .funds-sidebar {
+    max-width:360px;
+    padding:18px 12px;
+    border-radius:16px;
+    background:linear-gradient(180deg,rgba(8,45,78,.96),rgba(7,29,51,.96));
+}
+.funds-admin-page .funds-sidebar .budget-card,
+.funds-admin-page .funds-sidebar .section-panel {border-radius:14px}
+.funds-admin-page .funds-sidebar .section-panel {
+    background:rgba(10,26,33,.78);
+    border:1px solid rgba(144,218,206,.12);
+}
+.funds-admin-page .funds-sidebar .fund-post img.sidebar-budget-image {
+    display:block;
+    width:100%;
+    height:430px;
+    object-fit:contain;
+    margin-top:10px;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:9px;
+    background:rgba(3,15,20,.48);
+}
 .public-funds-page .funds-wrapper {
     grid-template-columns: 360px minmax(0,1fr);
     align-items: stretch;
@@ -972,6 +993,7 @@ body.fund-image-viewer-open {overflow:hidden}
         position:relative;top:0;max-width:none;max-height:none;min-height:auto;overflow:visible
     }
     .public-funds-page .funds-sidebar .fund-post img.sidebar-budget-image {height:320px}
+    .funds-admin-page .funds-sidebar .fund-post img.sidebar-budget-image {height:320px}
 }
 @media screen and (max-width:760px) {
     .fund-image-gallery--4 {grid-template-columns:repeat(2,minmax(0,240px))}
