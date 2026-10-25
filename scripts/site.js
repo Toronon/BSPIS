@@ -2,6 +2,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const page = document.body.dataset.page;
 let pendingHomeOfficialsScroll = false;
+let publicFundRecords = [];
 const supabaseUrl = window.BSPIS_SUPABASE_URL;
 const supabaseKey = window.BSPIS_SUPABASE_ANON_KEY;
 const configured = supabaseUrl && !supabaseUrl.includes('YOUR_PROJECT_REF')
@@ -31,13 +32,99 @@ function fundImageUrls(value) {
     return [storedValue];
 }
 
-function renderFundImageGallery(value) {
+function renderFundImageGallery(value, recordIndex, clickable = false) {
     const images = fundImageUrls(value);
     if (!images.length) return '';
-    const size = images.length === 1 ? 'fund-image-gallery--single' : 'fund-image-gallery--multiple';
+    const size = images.length === 1 ? 'fund-image-gallery--single'
+        : `fund-image-gallery--${Math.min(images.length, 4)}`;
+    const shownImages = images.slice(0, 4);
     return `<div class="fund-image-gallery ${size}" aria-label="${images.length} expense image${images.length === 1 ? '' : 's'}">
-        ${images.map((image, index) => `<img src="${escapeHtml(imageUrl(image, 'funds'))}" alt="Expense image ${index + 1}" loading="lazy">`).join('')}
+        ${shownImages.map((image, index) => {
+            const content = `<img src="${escapeHtml(imageUrl(image, 'funds'))}" alt="Expense image ${index + 1}" loading="lazy">
+                ${index === 3 && images.length > 4 ? `<span class="fund-image-more">+${images.length - 4}</span>` : ''}`;
+            return clickable
+                ? `<button type="button" class="fund-image-trigger" data-fund-record="${recordIndex}" data-fund-image="${index}" aria-label="View expense image ${index + 1} of ${images.length}">${content}</button>`
+                : `<div class="fund-image-thumbnail">${content}</div>`;
+        }).join('')}
     </div>`;
+}
+
+function setupFundImageViewer() {
+    if (document.getElementById('fund-image-viewer')) return;
+    const viewer = document.createElement('section');
+    viewer.id = 'fund-image-viewer';
+    viewer.className = 'fund-image-viewer';
+    viewer.hidden = true;
+    viewer.setAttribute('role', 'dialog');
+    viewer.setAttribute('aria-modal', 'true');
+    viewer.setAttribute('aria-label', 'Expense images');
+    viewer.innerHTML = `<div class="fund-image-viewer-panel">
+        <button class="fund-image-viewer-close" type="button" aria-label="Close images">×</button>
+        <div class="fund-image-viewer-details">
+            <div class="fund-image-viewer-meta"></div>
+            <div class="fund-image-viewer-heading"><h2></h2><strong></strong></div>
+            <p></p>
+        </div>
+        <div class="fund-image-viewer-photo"><img alt=""></div>
+        <div class="fund-image-viewer-controls">
+            <button type="button" data-fund-previous>← Previous</button>
+            <span aria-live="polite"></span>
+            <button type="button" data-fund-next>Next →</button>
+        </div>
+    </div>`;
+    document.body.append(viewer);
+
+    const image = viewer.querySelector('.fund-image-viewer-photo img');
+    const closeButton = viewer.querySelector('.fund-image-viewer-close');
+    let currentImages = [];
+    let currentIndex = 0;
+    let lastTrigger = null;
+    const showImage = index => {
+        currentIndex = (index + currentImages.length) % currentImages.length;
+        image.src = imageUrl(currentImages[currentIndex], 'funds');
+        image.alt = `Expense image ${currentIndex + 1}`;
+        viewer.querySelector('.fund-image-viewer-controls span').textContent =
+            `${currentIndex + 1} of ${currentImages.length}`;
+        viewer.querySelector('[data-fund-previous]').disabled = currentImages.length < 2;
+        viewer.querySelector('[data-fund-next]').disabled = currentImages.length < 2;
+    };
+    const closeViewer = () => {
+        viewer.hidden = true;
+        document.body.classList.remove('fund-image-viewer-open');
+        image.removeAttribute('src');
+        lastTrigger?.focus();
+    };
+    document.addEventListener('click', event => {
+        const trigger = event.target.closest('[data-fund-record][data-fund-image]');
+        if (trigger) {
+            const record = publicFundRecords[Number(trigger.dataset.fundRecord)];
+            if (!record) return;
+            currentImages = fundImageUrls(record.image);
+            if (!currentImages.length) return;
+            lastTrigger = trigger;
+            viewer.querySelector('.fund-image-viewer-meta').textContent =
+                `${record.category === 'SK' ? 'SK' : 'Barangay'} Funds · ${record.quarter || ''} · ${record.date_received || ''}`;
+            viewer.querySelector('.fund-image-viewer-heading h2').textContent = record.fund_name || '';
+            viewer.querySelector('.fund-image-viewer-heading strong').textContent =
+                `₱${Math.abs(Number(record.amount || 0)).toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
+            viewer.querySelector('.fund-image-viewer-details p').textContent = record.description || '';
+            showImage(Number(trigger.dataset.fundImage));
+            viewer.hidden = false;
+            document.body.classList.add('fund-image-viewer-open');
+            closeButton.focus();
+            return;
+        }
+        if (event.target === viewer) closeViewer();
+        if (event.target.closest('.fund-image-viewer-close')) closeViewer();
+        if (event.target.closest('[data-fund-previous]')) showImage(currentIndex - 1);
+        if (event.target.closest('[data-fund-next]')) showImage(currentIndex + 1);
+    });
+    document.addEventListener('keydown', event => {
+        if (viewer.hidden) return;
+        if (event.key === 'Escape') closeViewer();
+        if (event.key === 'ArrowLeft') showImage(currentIndex - 1);
+        if (event.key === 'ArrowRight') showImage(currentIndex + 1);
+    });
 }
 
 function showError(target, error) {
@@ -339,6 +426,9 @@ async function loadFunds() {
             const expenseTotal = shownFunds.reduce((sum, item) => sum + Math.abs(Number(item.amount || 0)), 0);
             const current = annualTotal - expenseTotal;
             const selectedCategoryLabel = category === 'SK' ? 'SK' : 'Barangay';
+            document.querySelector('.funds-header .page-heading h1').textContent = `${selectedCategoryLabel} Funds`;
+            document.querySelector('.funds-header .page-heading p').textContent =
+                `View annual budgets and expenses for ${selectedCategoryLabel} funds.`;
             document.querySelector('.budget-card h2').textContent = `${selectedCategoryLabel} Current Budget`;
             document.getElementById('budget-summary').previousElementSibling.textContent = `${selectedCategoryLabel} Current Budget`;
             document.getElementById('current-budget').textContent = `₱${current.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
@@ -352,13 +442,15 @@ async function loadFunds() {
                 <p>${escapeHtml(item.description)}</p>
                 ${item.image ? `<img class="sidebar-budget-image" src="${escapeHtml(imageUrl(item.image, 'funds'))}" alt="Annual budget">` : ''}</article>
             `).join('') || '<div class="empty-state">No annual budgets posted yet.</div>';
-            fundList.innerHTML = shownFunds.map(item => `
-                <article class="fund-post"><div class="fund-post-header"><h3>${escapeHtml(item.fund_name)}</h3>
-                <span class="${Number(item.amount) < 0 ? 'expense' : 'fund'}">₱${Number(item.amount).toLocaleString('en-PH', { minimumFractionDigits: 2 })}</span></div>
+            publicFundRecords = shownFunds;
+            fundList.innerHTML = shownFunds.map((item, index) => `
+                <article class="fund-post">
                 <span class="fund-category-badge">${escapeHtml(item.category || 'Barangay')} Funds</span>
+                <div class="fund-post-header"><h3>${escapeHtml(item.fund_name)}</h3>
+                <span class="${Number(item.amount) < 0 ? 'expense' : 'fund'}">₱${Math.abs(Number(item.amount)).toLocaleString('en-PH', { minimumFractionDigits: 2 })}</span></div>
                 <div class="meta-line"><span class="quarter">${escapeHtml(item.quarter || '')}</span><small>${escapeHtml(item.date_received || '')}</small></div>
                 <p>${escapeHtml(item.description)}</p>
-                ${renderFundImageGallery(item.image)}</article>
+                ${renderFundImageGallery(item.image, index, true)}</article>
             `).join('') || '<div class="empty-state">No expenses posted yet.</div>';
         };
         yearSelect.addEventListener('change', render);
@@ -610,9 +702,9 @@ function renderFundAdmin() {
     if (fundsTarget) {
         fundsTarget.innerHTML = shownFunds.map(record => `
             <article class="fund-post">
+                <span class="fund-category-badge">${escapeHtml(record.category || 'Barangay')} Funds</span>
                 <div class="fund-post-header"><h3>${escapeHtml(record.fund_name)}</h3>
                     <span class="expense">₱${Math.abs(Number(record.amount || 0)).toLocaleString('en-PH', { minimumFractionDigits: 2 })}</span></div>
-                <span class="fund-category-badge">${escapeHtml(record.category || 'Barangay')} Funds</span>
                 <div class="meta-line"><span class="quarter">${escapeHtml(record.quarter || '')}</span><small>${escapeHtml(record.date_received || '')}</small></div>
                 <p>${escapeHtml(record.description || '')}</p>
                 ${renderFundImageGallery(record.image)}
@@ -1150,6 +1242,7 @@ function start() {
         }
     });
     if (!currentPage.startsWith('admin-')) {
+        if (currentPage === 'funds') setupFundImageViewer();
         document.querySelectorAll('.nav a[href]').forEach(link => {
             if (link.hash !== '#officials' || link.pathname.split('/').pop() !== 'index.html') return;
             link.addEventListener('click', event => {
