@@ -442,13 +442,11 @@ async function loadFunds() {
                 && (year === null || Number(item.year) === year));
             const shownFunds = funds.filter(item => (item.category || 'Barangay') === category
                 && (year === null || Number(item.year) === year));
-            const annualTotal = shownBudgets.reduce((sum, item) => sum + Number(item.amount || 0), 0);
-            const expenseTotal = shownFunds.reduce((sum, item) => sum + Math.abs(Number(item.amount || 0)), 0);
-            const current = annualTotal - expenseTotal;
+            const current = calculateFundBalance(budgets, funds, category, year);
             const selectedCategoryLabel = category === 'SK' ? 'SK' : 'Barangay';
             document.querySelector('.funds-header .page-heading h1').textContent = `${selectedCategoryLabel} Funds`;
             document.querySelector('.funds-header .page-heading p').textContent =
-                `View annual budgets and expenses for ${selectedCategoryLabel} funds.`;
+                `View annual budgets and expenses for ${selectedCategoryLabel} funds. Current Budget includes unspent balances carried over from previous years.`;
             document.querySelector('.budget-card h2').textContent = `${selectedCategoryLabel} Current Budget`;
             document.getElementById('current-budget').textContent = `₱${current.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
             document.getElementById('fund-count').textContent = shownFunds.length;
@@ -665,6 +663,43 @@ function renderOfficialCards(officials) {
     }).join('');
 }
 
+function calculateFundBalance(budgets, expenses, category, selectedYear = null) {
+    const yearlyTotals = new Map();
+    const getYearTotals = year => {
+        if (!yearlyTotals.has(year)) yearlyTotals.set(year, { budget: 0, expenses: 0 });
+        return yearlyTotals.get(year);
+    };
+
+    budgets.forEach(record => {
+        const year = Number(record.year);
+        if ((record.category || 'Barangay') !== category
+            || !Number.isInteger(year)
+            || (selectedYear !== null && year > selectedYear)) return;
+        getYearTotals(year).budget += Number(record.amount || 0);
+    });
+    expenses.forEach(record => {
+        const year = Number(record.year);
+        if ((record.category || 'Barangay') !== category
+            || !Number.isInteger(year)
+            || (selectedYear !== null && year > selectedYear)) return;
+        getYearTotals(year).expenses += Math.abs(Number(record.amount || 0));
+    });
+
+    const currentYear = selectedYear ?? Math.max(...yearlyTotals.keys());
+    if (!Number.isInteger(currentYear)) return 0;
+    getYearTotals(currentYear);
+
+    let carryover = 0;
+    const years = [...yearlyTotals.keys()].sort((left, right) => left - right);
+    for (const year of years) {
+        const totals = yearlyTotals.get(year);
+        const remaining = carryover + totals.budget - totals.expenses;
+        if (year === currentYear) return remaining;
+        carryover = Math.max(remaining, 0);
+    }
+    return carryover;
+}
+
 function renderFundAdmin() {
     const annualTarget = document.getElementById('annual-list-admin');
     const fundsTarget = document.getElementById('fund-list-admin');
@@ -688,9 +723,7 @@ function renderFundAdmin() {
     const shownFunds = funds.filter(row => (row.category || 'Barangay') === category
         && (!year || String(row.year) === year));
     adminFundRecords = shownFunds;
-    const annualTotal = shownBudgets.reduce((sum, row) => sum + Number(row.amount || 0), 0);
-    const expenseTotal = shownFunds.reduce((sum, row) => sum + Math.abs(Number(row.amount || 0)), 0);
-    const currentBudget = annualTotal - expenseTotal;
+    const currentBudget = calculateFundBalance(budgets, funds, category, year ? Number(year) : null);
     const formattedBudget = `₱${currentBudget.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
     const currentBudgetTarget = document.getElementById('admin-current-budget');
     const categoryLabel = category === 'SK' ? 'SK' : 'Barangay';
@@ -833,15 +866,18 @@ async function saveRecord(table, form) {
         values.amount = -Math.abs(Number(values.amount));
         if (!values.date_received) values.date_received = new Date().toISOString().slice(0, 10);
         const [{ data: budgets, error: budgetError }, { data: expenses, error: expensesError }] = await Promise.all([
-            supabase.from('annual_budgets').select('amount').eq('year', selectedYear).eq('category', category),
-            supabase.from('funds').select('id,amount').eq('year', selectedYear).eq('category', category)
+            supabase.from('annual_budgets').select('year,amount,category').lte('year', selectedYear).eq('category', category),
+            supabase.from('funds').select('id,year,amount,category').lte('year', selectedYear).eq('category', category)
         ]);
         if (budgetError) throw budgetError;
         if (expensesError) throw expensesError;
-        const totalBudget = budgets.reduce((sum, row) => sum + Number(row.amount || 0), 0);
-        const totalExpenses = expenses.reduce((sum, row) => sum
-            + (String(row.id) === String(id) ? 0 : Math.abs(Number(row.amount || 0))), 0);
-        values.current_budget = totalBudget - totalExpenses - Math.abs(values.amount);
+        const expensesWithoutCurrent = expenses.filter(row => String(row.id) !== String(id));
+        values.current_budget = calculateFundBalance(
+            budgets,
+            [...expensesWithoutCurrent, { year: selectedYear, amount: values.amount, category }],
+            category,
+            selectedYear
+        );
     }
     const statement = id
         ? supabase.from(table).update(values).eq('id', id).select('id').single()
