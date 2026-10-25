@@ -25,7 +25,7 @@
             <div class="budget-card"><h2>Current Budget</h2><span id="admin-current-budget">₱0.00</span></div>
             <form class="year-filter" id="admin-fund-year-form"><label for="admin-fund-year">Fiscal Year</label><select id="admin-fund-year"><option value="">Select Year</option></select></form>
             <section class="section-panel">
-                <div class="section-title-row"><h2>Annual Budgets</h2><span class="status-pill">Budget</span></div>
+                <div class="section-title-row"><h2>Annual Budgets</h2></div>
                 <div id="annual-list-admin"><div class="empty-state">Loading annual budgets…</div></div>
             </section>
         </aside>
@@ -40,9 +40,7 @@
                     <button id="generate-report-btn" class="admin-action-btn secondary" type="button">Generate Report</button>
                 </div>
             </div>
-            <div class="summary-grid">
-                <div class="summary-card"><span class="label">Current Budget</span><span class="value positive" id="admin-budget-summary">₱0.00</span></div>
-                <div class="summary-card"><span class="label">Annual Budgets</span><span class="value" id="admin-annual-count">0</span></div>
+            <div class="summary-grid summary-grid--expenses-only">
                 <div class="summary-card"><span class="label">Expenses</span><span class="value negative" id="admin-expense-count">0</span></div>
             </div>
             <section class="section-panel">
