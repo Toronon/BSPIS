@@ -166,9 +166,13 @@ async function loadAnnouncements() {
     container.innerHTML = `${data.length ? `<div class="announcement-feed-heading">
         <div><p class="section-kicker">Latest from the barangay</p><h2>Community notices</h2></div>
         <span class="announcement-count-badge">${data.length} published</span>
-    </div>` : ''}<div class="announcement-list">${data.map(item => `
+    </div>` : ''}<div class="announcement-list">${data.map((item, index) => `
         <article class="announcement-card">
-            ${item.image ? `<div class="announcement-media"><img src="${escapeHtml(imageUrl(item.image, 'announcements'))}" alt=""></div>` : ''}
+            <div class="announcement-media">
+                ${item.image
+                    ? `<button class="announcement-image-button" type="button" data-announcement-open="${index}" aria-label="View announcement: ${escapeHtml(item.title)}"><img src="${escapeHtml(imageUrl(item.image, 'announcements'))}" alt=""></button>`
+                    : '<div class="announcement-no-image">Barangay update</div>'}
+            </div>
             <div class="announcement-card-content">
                 <div class="announcement-card-meta">
                     <span class="announcement-type">Community notice</span>
@@ -177,6 +181,60 @@ async function loadAnnouncements() {
                 <h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(preview(item.message))}</p>
             </div>
         </article>`).join('')}</div>`;
+
+    const viewer = document.createElement('section');
+    viewer.className = 'announcement-viewer';
+    viewer.hidden = true;
+    viewer.setAttribute('role', 'dialog');
+    viewer.setAttribute('aria-modal', 'true');
+    viewer.setAttribute('aria-label', 'Announcement details');
+    viewer.innerHTML = `<div class="announcement-viewer-panel">
+        <button class="announcement-viewer-close" type="button" aria-label="Close announcement">×</button>
+        <div class="announcement-viewer-image"><img alt=""></div>
+        <div class="announcement-viewer-content">
+            <time class="announcement-date"></time>
+            <h2></h2>
+            <p></p>
+        </div>
+    </div>`;
+    document.body.append(viewer);
+
+    const closeButton = viewer.querySelector('.announcement-viewer-close');
+    let lastTrigger = null;
+    const closeViewer = () => {
+        viewer.hidden = true;
+        document.body.classList.remove('announcement-viewer-open');
+        lastTrigger?.focus();
+    };
+    container.addEventListener('click', event => {
+        const trigger = event.target.closest('[data-announcement-open]');
+        if (!trigger) return;
+        const item = data[Number(trigger.dataset.announcementOpen)];
+        if (!item) return;
+        lastTrigger = trigger;
+        const image = viewer.querySelector('.announcement-viewer-image img');
+        image.src = imageUrl(item.image, 'announcements');
+        image.alt = item.title;
+        viewer.querySelector('time').textContent = formatDate(item.publish_date);
+        viewer.querySelector('time').dateTime = item.publish_date || '';
+        viewer.querySelector('h2').textContent = item.title;
+        viewer.querySelector('.announcement-viewer-content p').textContent = item.message;
+        viewer.hidden = false;
+        document.body.classList.add('announcement-viewer-open');
+        closeButton.focus();
+    });
+    closeButton.addEventListener('click', closeViewer);
+    viewer.addEventListener('click', event => {
+        if (event.target === viewer) closeViewer();
+    });
+    document.addEventListener('keydown', event => {
+        if (viewer.hidden) return;
+        if (event.key === 'Escape') closeViewer();
+        if (event.key === 'Tab') {
+            event.preventDefault();
+            closeButton.focus();
+        }
+    });
 }
 
 async function loadFunds() {
