@@ -1,6 +1,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const page = document.body.dataset.page;
+let pendingHomeOfficialsScroll = false;
 const supabaseUrl = window.BSPIS_SUPABASE_URL;
 const supabaseKey = window.BSPIS_SUPABASE_ANON_KEY;
 const configured = supabaseUrl && !supabaseUrl.includes('YOUR_PROJECT_REF')
@@ -134,9 +135,30 @@ async function loadOfficials() {
     try {
         const officials = await getPublicOfficials();
         containers.forEach(container => renderOfficials(officials, container));
+        if (pendingHomeOfficialsScroll) {
+            pendingHomeOfficialsScroll = false;
+            scrollToHomeOfficials();
+        }
     } catch (error) {
         containers.forEach(container => showError(container, error));
     }
+}
+
+function scrollToHomeOfficials() {
+    const target = document.querySelector('#home-officials .public-official-group');
+    const section = document.getElementById('officials');
+    if (!target) {
+        pendingHomeOfficialsScroll = true;
+        return;
+    }
+    section?.classList.remove('officials-focus');
+    void section?.offsetWidth;
+    section?.classList.add('officials-focus');
+    target.scrollIntoView({
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        block: 'start'
+    });
+    window.setTimeout(() => section?.classList.remove('officials-focus'), 1800);
 }
 
 async function loadAnnouncements() {
@@ -1065,6 +1087,13 @@ function start() {
         element.textContent = new Date().getFullYear();
     });
     const currentPage = document.body.dataset.page || '';
+    const isHomeOfficialsSection = currentPage === 'home'
+        && window.location.hash === '#officials';
+    if (isHomeOfficialsSection) {
+        pendingHomeOfficialsScroll = true;
+        window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+        window.scrollTo(0, 0);
+    }
     const navTarget = {
         home: 'index.html',
         'residents-public': 'residents.html',
@@ -1074,8 +1103,6 @@ function start() {
         const isPublicOfficialsLink = !currentPage.startsWith('admin-')
             && link.hash === '#officials'
             && link.pathname.split('/').pop() === 'index.html';
-        const isHomeOfficialsSection = currentPage === 'home'
-            && window.location.hash === '#officials';
         const isPublicHomeLink = !currentPage.startsWith('admin-')
             && !link.hash
             && link.pathname.split('/').pop() === 'index.html';
@@ -1090,6 +1117,22 @@ function start() {
             link.removeAttribute('aria-current');
         }
     });
+    if (!currentPage.startsWith('admin-')) {
+        document.querySelectorAll('.nav a[href]').forEach(link => {
+            if (link.hash !== '#officials' || link.pathname.split('/').pop() !== 'index.html') return;
+            link.addEventListener('click', event => {
+                if (currentPage !== 'home') return;
+                event.preventDefault();
+                window.history.pushState(null, '', '#officials');
+                document.querySelectorAll('.nav a[aria-current="page"]').forEach(activeLink => {
+                    activeLink.removeAttribute('aria-current');
+                });
+                link.setAttribute('aria-current', 'page');
+                document.querySelector('.nav')?.classList.remove('active');
+                scrollToHomeOfficials();
+            });
+        });
+    }
     document.querySelector('.menu-toggle')?.addEventListener('click', () => {
         document.querySelector('.nav')?.classList.toggle('active');
     });
