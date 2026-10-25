@@ -145,16 +145,16 @@ async function loadOfficials() {
 }
 
 function scrollToHomeOfficials() {
-    const target = document.querySelector('#home-officials .public-official-group');
     const section = document.getElementById('officials');
-    if (!target) {
+    const firstGroup = document.querySelector('#home-officials .public-official-group');
+    if (!section || !firstGroup) {
         pendingHomeOfficialsScroll = true;
         return;
     }
     section?.classList.remove('officials-focus');
     void section?.offsetWidth;
     section?.classList.add('officials-focus');
-    target.scrollIntoView({
+    section.scrollIntoView({
         behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
         block: 'start'
     });
