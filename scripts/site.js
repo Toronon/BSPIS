@@ -372,38 +372,37 @@ async function loadResidentPopulation() {
     if (!container) return;
     const status = container.querySelector('.resident-population-status');
     const grid = container.querySelector('.resident-population-grid');
+    const civilStatuses = ['single', 'married', 'separated', 'divorced', 'widowed', 'annulled', 'other'];
     try {
         const { data, error } = await supabase.rpc('get_public_resident_population');
         if (error) throw error;
-        const values = [
-            data?.total,
-            data?.puroks?.['1'],
-            data?.puroks?.['2'],
-            data?.puroks?.['3'],
-            data?.gender?.male,
-            data?.gender?.female,
-            data?.civil_status?.single,
-            data?.civil_status?.married,
-            data?.civil_status?.separated,
-            data?.civil_status?.divorced,
-            data?.civil_status?.widowed,
-            data?.civil_status?.annulled,
-            data?.civil_status?.other
-        ];
+        const values = [data?.total, data?.gender?.male, data?.gender?.female];
+        const purokValues = ['1', '2', '3'].map(purok => {
+            const details = data?.puroks?.[purok];
+            const counts = [
+                details?.total,
+                details?.gender?.male,
+                details?.gender?.female,
+                ...civilStatuses.map(civilStatus => details?.civil_status?.[civilStatus])
+            ];
+            values.push(...counts);
+            return { purok, counts };
+        });
         if (values.some(value => !Number.isInteger(value) || value < 0)) {
-            throw new Error('Population totals are unavailable. Please contact the Barangay San Pablo office.');
+            throw new Error('The population dashboard database function is outdated. Run the latest supabase_resident_population.sql in Supabase SQL Editor, then refresh this page.');
         }
         document.getElementById('resident-population-total').textContent = values[0].toLocaleString();
-        document.getElementById('resident-population-purok-1').textContent = values[1].toLocaleString();
-        document.getElementById('resident-population-purok-2').textContent = values[2].toLocaleString();
-        document.getElementById('resident-population-purok-3').textContent = values[3].toLocaleString();
-        document.getElementById('resident-population-male').textContent = values[4].toLocaleString();
-        document.getElementById('resident-population-female').textContent = values[5].toLocaleString();
-        [
-            'single', 'married', 'separated', 'divorced', 'widowed', 'annulled', 'other-status'
-        ].forEach((statusName, index) => {
-            document.getElementById(`resident-population-${statusName}`).textContent =
-                values[index + 6].toLocaleString();
+        document.getElementById('resident-population-male').textContent = values[1].toLocaleString();
+        document.getElementById('resident-population-female').textContent = values[2].toLocaleString();
+        purokValues.forEach(({ purok, counts }) => {
+            document.getElementById(`resident-population-purok-${purok}`).textContent = counts[0].toLocaleString();
+            document.getElementById(`purok-${purok}-male`).textContent = counts[1].toLocaleString();
+            document.getElementById(`purok-${purok}-female`).textContent = counts[2].toLocaleString();
+            civilStatuses.forEach((civilStatus, index) => {
+                const idStatus = civilStatus === 'other' ? 'other' : civilStatus;
+                document.getElementById(`purok-${purok}-${idStatus}`).textContent =
+                    counts[index + 3].toLocaleString();
+            });
         });
         status.hidden = true;
         grid.hidden = false;
