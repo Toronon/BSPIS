@@ -582,11 +582,15 @@ body.announcement-viewer-open {overflow:hidden}
 .announcement-card h3,
 .announcement-card p,
 .announcement-message-preview {overflow-wrap:break-word;word-break:break-word;}
-.announcement-list {grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px;max-height:none;overflow:visible;}
+.announcement-public .announcement-list {grid-template-columns:minmax(0,1fr);gap:16px;max-height:none;overflow:visible;padding:4px 0 12px;}
 .announcement-public .announcement-card,
-.announcement-public .announcement-card--featured {display:flex;grid-column:auto;min-height:0;width:100%;padding:20px;flex-direction:column;}
-.announcement-public .announcement-card--featured .announcement-media {order:0;height:auto;min-height:0;margin-bottom:18px;border-radius:8px;}
-.announcement-public .announcement-card--featured .announcement-card-content {padding:0;}
+.announcement-public .announcement-card--featured {display:grid;grid-template-columns:minmax(150px,220px) minmax(0,1fr);grid-column:1;align-items:center;gap:20px;min-height:170px;width:100%;padding:16px;flex-direction:initial;}
+.announcement-public .announcement-card .announcement-media,
+.announcement-public .announcement-card--featured .announcement-media {order:0;width:100%;height:136px;min-height:0;margin:0;overflow:hidden;border-radius:8px;}
+.announcement-public .announcement-card .announcement-media img {display:block;width:100%;height:100%;min-height:0;margin:0;object-fit:cover;}
+.announcement-public .announcement-card .announcement-image-button {display:block;width:100%;height:100%;padding:0;border:0;border-radius:inherit;background:transparent;cursor:zoom-in;}
+.announcement-public .announcement-card .announcement-card-content,
+.announcement-public .announcement-card--featured .announcement-card-content {min-width:0;padding:0;}
 .announcement-public .announcement-card h3,
 .announcement-public .announcement-card:first-child h3 {font-size:1.25rem;}
 .announcement-public .announcement-card p {display:-webkit-box;max-height:7.2em;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:6;}
@@ -726,6 +730,9 @@ body.announcement-viewer-open {overflow:hidden}
 
 @media (max-width: 620px) {
     .announcement-list {grid-template-columns:1fr;gap:16px;}
+    .announcement-public .announcement-card,
+    .announcement-public .announcement-card--featured {grid-template-columns:1fr;gap:14px;min-height:0;}
+    .announcement-public .announcement-card .announcement-media {height:180px;}
     .announcement-admin .table-section table {min-width:760px;}
     .published-announcements-grid {grid-template-columns:1fr;}
     .announcement-gallery {grid-template-columns:1fr;}
