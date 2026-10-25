@@ -221,18 +221,32 @@ body.login-body {
 .residents-public-page .public-header-mark {display:grid;width:74px;height:74px;flex-shrink:0;place-items:center;border:1px solid rgba(0,227,194,.3);border-radius:50%;background:rgba(0,227,194,.08);color:#00e3c2;font-size:2rem}
 .residents-public-page .public-header-mark small {margin-top:-18px;color:#a8c5c1;font-size:.55rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
 .resident-population-dashboard {padding:24px;border:1px solid rgba(142,236,224,.14);border-radius:18px;background:linear-gradient(145deg,rgba(18,58,68,.78),rgba(7,23,29,.9));box-shadow:0 18px 42px rgba(0,0,0,.2)}
-.resident-population-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.resident-population-grid {display:grid;gap:20px}
 .resident-population-grid[hidden] {display:none}
 .resident-population-card {display:grid;min-height:170px;align-content:center;gap:9px;padding:24px;border:1px solid rgba(142,236,224,.14);border-radius:14px;background:rgba(255,255,255,.045)}
 .resident-population-card p {color:#8de9dc;font-size:.82rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
 .resident-population-card strong {color:#f4fffd;font-size:clamp(2rem,4vw,3rem);line-height:1}
 .resident-population-card span {color:#9db8b8;font-size:.84rem}
-.resident-population-section-heading {grid-column:1/-1;margin-top:12px;color:#f4fffd;font-size:1.25rem}
-.resident-population-card--total {grid-column:1/-1;min-height:190px;background:linear-gradient(120deg,rgba(0,227,194,.12),rgba(255,255,255,.035))}
+.resident-population-overview {display:grid;grid-template-columns:2fr 1fr 1fr;gap:16px}
+.resident-population-card--total {min-height:190px;background:linear-gradient(120deg,rgba(0,227,194,.12),rgba(255,255,255,.035))}
 .resident-population-card--total strong {color:#00e3c2;font-size:clamp(3rem,7vw,5rem)}
+.resident-population-card--gender {min-height:190px}
+.resident-population-card--gender strong {color:#8de9dc}
+.resident-population-puroks {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.resident-population-purok-card {min-width:0;padding:20px;border:1px solid rgba(142,236,224,.14);border-radius:14px;background:rgba(255,255,255,.045)}
+.resident-population-purok-card header {display:flex;align-items:baseline;gap:8px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.1)}
+.resident-population-purok-card header h2 {margin:0;color:#f4fffd;font-size:1.2rem}
+.resident-population-purok-card header strong {margin-left:auto;color:#00e3c2;font-size:1.6rem}
+.resident-population-purok-card header span {color:#9db8b8;font-size:.76rem}
+.resident-population-breakdown {display:grid;grid-template-columns:1fr auto;gap:8px 12px;padding-top:14px}
+.resident-population-breakdown h3 {grid-column:1/-1;margin:8px 0 0;color:#8de9dc;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase}
+.resident-population-breakdown h3:first-child {margin-top:0}
+.resident-population-breakdown p {display:contents;color:#cbd5e1;font-size:.86rem}
+.resident-population-breakdown strong {color:#f4fffd;text-align:right;font-variant-numeric:tabular-nums}
 .resident-population-status {color:#cbd5e1;line-height:1.6}
 .resident-population-error {color:#ffb1b1}
-@media(max-width:700px){.residents-public-page{width:min(100% - 28px,1160px)}.residents-public-page .public-page-header{align-items:flex-start;flex-direction:column;padding:24px 20px}.residents-public-page .public-header-mark{display:none}.resident-population-dashboard{padding:16px}.resident-population-grid{grid-template-columns:1fr}.resident-population-card--total{grid-column:1}.resident-population-card{min-height:140px}}
+@media(max-width:900px){.resident-population-puroks{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.residents-public-page{width:min(100% - 28px,1160px)}.residents-public-page .public-page-header{align-items:flex-start;flex-direction:column;padding:24px 20px}.residents-public-page .public-header-mark{display:none}.resident-population-dashboard{padding:16px}.resident-population-overview{grid-template-columns:1fr 1fr}.resident-population-card--total{grid-column:1/-1}.resident-population-card,.resident-population-card--gender{min-height:140px;padding:18px}.resident-population-puroks{grid-template-columns:1fr}}
 
 .emergency-section{position:relative;width:min(100% - 40px,1160px);margin:0 auto 52px;padding:24px;border:1px solid rgba(255,133,133,.24);border-radius:18px;background:linear-gradient(135deg,rgba(73,30,39,.7),rgba(7,29,38,.94) 72%);box-shadow:0 18px 42px rgba(0,0,0,.2);overflow:hidden}.emergency-section::after{position:absolute;right:0;bottom:0;width:38%;height:3px;background:linear-gradient(90deg,transparent,#00e3c2);content:"";opacity:.8}
 .emergency-heading{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:18px;padding:2px 0 16px 18px;border-bottom:1px solid rgba(255,255,255,.12);border-left:4px solid #ff8585}.emergency-heading .section-kicker{margin-bottom:6px;color:#ff9b9b}.emergency-heading h2{margin:0;color:#f4fffd;font-size:clamp(1.45rem,3vw,2rem);letter-spacing:.01em}.emergency-heading>p{max-width:320px;color:#b9cfcc;font-size:.84rem;line-height:1.5}
