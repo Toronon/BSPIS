@@ -863,7 +863,18 @@ body.fund-image-viewer-open {overflow:hidden}
     height:calc(100vh - 104px);
     min-height:0;
     max-height:none;
-    overflow:visible;
+    overflow-x:hidden;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    scrollbar-width:thin;
+    scrollbar-color:rgba(0,255,213,.45) rgba(255,255,255,.06);
+}
+.public-funds-page .funds-sidebar::-webkit-scrollbar,
+.funds-admin-page .funds-sidebar::-webkit-scrollbar {width:8px}
+.public-funds-page .funds-sidebar::-webkit-scrollbar-thumb,
+.funds-admin-page .funds-sidebar::-webkit-scrollbar-thumb {
+    border-radius:999px;
+    background:rgba(0,255,213,.45);
 }
 .public-funds-page .funds-feed,
 .funds-admin-page .funds-feed {
@@ -928,7 +939,6 @@ body.fund-image-viewer-open {overflow:hidden}
     min-height: 0;
     max-width: 360px;
     max-height: none;
-    overflow: visible;
     padding: 18px 12px;
     border-radius: 16px;
     background: linear-gradient(180deg, rgba(8,45,78,.96), rgba(7,29,51,.96));
